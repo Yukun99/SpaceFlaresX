@@ -1,0 +1,37 @@
+# Placeholders:
+# %tier% --> tier name of summoned or landed flare (Usable in Name, Lore)
+
+###################
+# General Options #
+###################
+# Name of flare tier
+TierName: "&f&lBasic"
+# Settings for announcements about flares and related crates.
+Announce:
+  Enable: True # Whether to enable announcements.
+  # Radius for announcing flare and crate related actions.
+  # Set to -1 to announce to all players.
+  Radius: 100
+# Settings for crate falling behaviour.
+Fall:
+  Enable: True # True to allow crate to fall, False to spawn crate on ground.
+  Height: 50 # Height in blocks above ground for crate to fall from.
+# Settings for randomising crate spawn location.
+Random:
+  Enable: True # Whether to randomise flare spawn location.
+  Radius: 10 # Radius around player to randomise spawn location in.
+
+################
+# Item Options #
+################
+# Item type of flare item.
+# List of types for LATEST version: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+# Please Google for the javadocs for older Minecraft versions, or just ask in the plugin thread :)
+Item: "TORCH"
+# Name of flare item.
+Name: "%tier% Flare &b(Right Click)"
+# Lore of flare item.
+Lore:
+  - "&fA mysterious flare from space."
+  - "&fIt seems to buzz with energy..."
+  - "&5&oWhat happens if I use it?"

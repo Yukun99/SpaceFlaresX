@@ -1,0 +1,95 @@
+# Placeholders:
+# %player% --> player who receives, summons or claims flare (Usable in Give, GiveFull, SummonAll, LandAll, ClaimAll)
+# %tier% --> tier name of summoned or landed flare (Usable in Give, Receive, Summon, SummonAll, Land, LandAll, Claim, ClaimAll, Despawn.Notify, DespawnAll, Redeem)
+# %amount% --> amount of flares given / sent to redeemable / redeemed (Usable in Give, GiveFull, Receive, ReceiveFull, Redeem)
+# %time% --> time in seconds before flare lands or crate despawns (Usable in Land, LandAll)
+# %loc% --> location where flare appears or crate lands (Usable in Summon, SummonAll, Land, LandAll, Claim, ClaimAll, Despawn.Notify, DespawnAll)
+
+#Prefix before all single lined messages.
+Prefix: "&bSpace&eFlares&f >> &7"
+
+########################
+# Placeholder Settings #
+########################
+Placeholder:
+  # Format of %loc% placeholder. Usable placeholders: %world%, %x%, %y%, %z%
+  Loc: "&b&l%world%: %x%, %y%, %z%"
+  # Format for %player% placeholder. Usable placeholders: %username%, %displayname%
+  # %username% is player's username, %displayname% is player's nickname, and maybe prefix/suffix
+  Player: "%username%"
+
+####################
+# Command Messages #
+####################
+# Message sent when you give a player flares using the command.
+Give: "&aYou have given %player% %amount% %tier% flare(s)."
+# Message sent when you give a player with a full inventory flares using the command.
+GiveFull: "&c%player%'s inventory is full! Sending %amount% flare(s) to redeemables."
+# Message sent to player when they are given flares using the command.
+Receive: "&aYou have received %amount% %tier% flare(s)."
+# Message sent to player with a full inventory when they are given flares using the command.
+ReceiveFull: "&cYour inventory is full! Please use /spaceflares redeem to claim %amount% flare(s)."
+
+##################
+# Flare Messages #
+##################
+# Message sent if a player tries to summon a flare outside of specified regions.
+NoSummon: "&fYou may not summon a flare here! Please move to the &c&lWARZONE&f."
+# Message sent to player who summons a flare.
+Summon:
+  - "&f&l=============== &c&lALERT &f&l==============="
+  - "&aYou have summoned a %tier%&a flare at %loc%&a!"
+  - "&aClaim it first for great rewards."
+  - "&f&l====================================="
+# Message sent to all players when a player summons a flare.
+# This will not be sent to the player who summoned the flare.
+SummonAll:
+  - "&f&l=============== &c&lALERT &f&l==============="
+  - "&f%player%&f has summoned a %tier%&f flare at %loc%&f!"
+  - "&fClaim it first for great rewards."
+  - "&f&l====================================="
+
+##################
+# Crate Messages #
+##################
+# Message sent to player who summoned a flare when it lands.
+Land:
+  - "&f&l=============== &c&lALERT &f&l==============="
+  - "&aYour %tier%&a crate has landed at %loc%&a!"
+  - "&aThe crate will despawn in &b%time%&a second(s)."
+  - "&f&l====================================="
+# Message sent to all players when a summoned flare has landed.
+# This will not be sent to the player who summoned the flare.
+LandAll:
+  - "&f&l=============== &c&lALERT &f&l==============="
+  - "&f%player%&f's %tier%&f crate has landed at %loc%&f!"
+  - "&fThe crate will despawn in &b%time%&f second(s)."
+  - "&f&l====================================="
+Claim:
+  - "&f&l=============== &c&lALERT &f&l==============="
+  - "&aYou have claimed the %tier%&a crate at %loc%&a!"
+  - "&aThe crate fizzles out... Until next time!"
+  - "&f&l====================================="
+ClaimAll:
+  - "&f&l=============== &c&lALERT &f&l==============="
+  - "&f%player%&f has claimed the %tier%&f crate at %loc%&f!"
+  - "&fThe crate fizzles out... Until next time!"
+  - "&f&l====================================="
+Despawn:
+  # Message sent to a player when their crate has despawned.
+  Notify: "Your %tier%&f crate at %loc%&f has despawned."
+  # Message also sent to the player if despawned crates give them items automatically.
+  Items: "The items have been added to your inventory."
+# Message sent to all players when a crate has despawned.
+DespawnAll:
+  - "&f&l=============== &c&lALERT &f&l==============="
+  - "&fThe %tier%&f crate at %loc%&f has despawned."
+  - "&f&l====================================="
+
+###################
+# Redeem Messages #
+###################
+# Message sent when player redeems flares successfully.
+Redeem: "&aYou have redeemed %amount% %tier% flares!"
+# Message sent when player redeems flares with a full inventory.
+RedeemFull: "&cYour inventory is full! Please empty out slots before redeeming!"

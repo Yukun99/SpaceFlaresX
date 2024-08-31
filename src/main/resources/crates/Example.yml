@@ -1,0 +1,56 @@
+# Placeholders:
+# %player% --> player to execute command on (Usable in Commands)
+
+###################
+# General Options #
+###################
+# Item type of crate block.
+# List of types for LATEST version: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+# Please Google for the javadocs for older Minecraft versions, or just ask in the plugin thread :)
+Block: "CHEST"
+# Settings for giving crate contents instantly.
+# Note that non item rewards will be given instantly regardless of this setting.
+FastClaim:
+  # Whether to drop items or add them to inventory when fast claiming.
+  # True = drop items, False = add to inventory, but drop extra if inventory full
+  Drop: False
+  # Whether to give crate contents instantly only if player is sneaking when clicking the crate.
+  Sneak: True
+  # Whether to give crate contents instantly if player left clicks the crate.
+  Punch: True
+  # Whether to give crate contents instantly of player right clicks the crate.
+  Use: False
+# Settings for despawning crates.
+Despawn:
+  Enable: True # Whether to despawn crates after set time.
+  Time: 60 # Time in seconds before crate despawns.
+  Give: True # Whether to automatically give items to flare user on despawn.
+
+##################
+# Reward Options #
+##################
+# Size of GUI if player opens crate without fast claiming.
+Size: 54
+# List of all rewards. Add as many as you want.
+# These can be named anything instead of Reward1, Reward2, etc.
+# Just make sure that each reward has a different name.
+Rewards:
+  # Example format for an item reward.
+  # I suggest you comment this out for future reference instead of deleting it.
+  Reward1:
+    Type: "ITEM" # Available types: ITEM, COMMAND
+    Chance: 10 # Percentage chance out of 100 for this reward to be in the crate. Minimum 1.
+    Amount: 10 # Amount of item to be rewarded.
+    Item: "DIAMOND" # Item type of item reward.
+    Name: "&c&lBLOOD DIAMOND" # Name of item reward. (Can be deleted for no custom name)
+    Lore: # Lore of item reward. (Can be deleted for no custom lore)
+      - "&cBlood diamonds, found on Mars."
+      - "&cIt seems to be warm to the touch."
+  # Example format for a command reward.
+  # I suggest you comment this out for future reference instead of deleting it.
+  Reward2:
+    Type: "COMMAND" # Available types: ITEM, COMMAND
+    Chance: 20 # Percentage chance out of 100 for this reward to be in the crate.
+    Commands: # Commands to run to reward player.
+      - "say %player% is really lucky!"
+      - "give %player% minecraft:emerald 4"

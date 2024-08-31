@@ -1,0 +1,37 @@
+###################
+# General Options #
+###################
+
+##################
+# Redeem Options #
+##################
+# Options related to redeeming flares.
+Redeem:
+  # Size of redeem GUI. Must be a multiple of 9.
+  Size: 54
+  # Name of redeem GUI.
+  Name: "&b&lUnclaimed Flares"
+Next:
+  # Item type of next page item.
+  # List of types for LATEST version: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+  # Please Google for the javadocs for older Minecraft versions, or just ask in the plugin thread :)
+  Item: "LIME_STAINED_GLASS_PANE"
+  # Name of next page item.
+  Name: "&a&lNext Page"
+  # Lore of next page item.
+  Lore:
+    - "&fClick this item to"
+    - "&fgo to the next page"
+    - "&fof redeemable items."
+Previous:
+  # Item type of next page item.
+  # List of types for LATEST version: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+  # Please Google for the javadocs for older Minecraft versions, or just ask in the plugin thread :)
+  Item: "LIME_STAINED_GLASS_PANE"
+  # Name of previous page item.
+  Name: "&a&lPrevious Page"
+  # Lore of previous page item.
+  Lore:
+    - "&fClick this item to"
+    - "&fgo to the previous page"
+    - "&fof redeemable items."
