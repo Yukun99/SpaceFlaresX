@@ -43,10 +43,10 @@ public class Fireworks {
 
   private static void detonate(Firework firework) {
     Bukkit.getServer().getScheduler()
-        .scheduleSyncDelayedTask(Main.getPlugin(), () -> {
-          firework.detonate();
-          FlareFireworkListener.deregisterFirework(firework);
-        }, 2L);
+        .scheduleSyncDelayedTask(Main.getPlugin(), firework::detonate, 1L);
+    Bukkit.getServer().getScheduler()
+        .scheduleSyncDelayedTask(Main.getPlugin(),
+            () -> FlareFireworkListener.deregisterFirework(firework), 2L);
   }
 
   private static final Map<String, Color> nameColorMap = new HashMap<>(17) {{
