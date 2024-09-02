@@ -1,4 +1,4 @@
-package me.yukun.spaceflares.gui;
+package me.yukun.spaceflares.gui.handler;
 
 import static me.yukun.spaceflares.util.InventoryHandler.tryAddItems;
 
@@ -6,6 +6,7 @@ import java.util.Set;
 import me.yukun.spaceflares.config.FlareConfig;
 import me.yukun.spaceflares.config.Messages;
 import me.yukun.spaceflares.config.Redeems;
+import me.yukun.spaceflares.gui.RedeemGUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

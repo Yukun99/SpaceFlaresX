@@ -7,7 +7,9 @@ public enum FieldTypeEnum {
   BOOLEAN("Boolean value"),
   STRINGLIST("String list"),
   SECTION("Section"),
-  REWARD("Reward type");
+  REWARD("Reward type"),
+  FIREWORK("Firework type"),
+  COLOR("Color value");
 
   private final String name;
 

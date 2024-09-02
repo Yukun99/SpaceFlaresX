@@ -34,4 +34,20 @@ Name: "%tier% Flare &b(Right Click)"
 Lore:
   - "&fA mysterious flare from space."
   - "&fIt seems to buzz with energy..."
-  - "&5&oWhat happens if I use it?"
+  - "&fWhat happens if I use it?"
+
+####################
+# Firework Options #
+####################
+Firework:
+  # Type of firework effect to spawn.
+  # Types: BALL, BALL_LARGE, CREEPER, BURST, STAR
+  Type: 'BALL'
+  # What colors to use in firework blast.
+  # Possible values: AQUA, BLACK, BLUE, FUCHSIA, GRAY, GREEN, LIME, MAROON, NAVY,
+  #                  OLIVE, ORANGE, PURPLE, RED, SILVER, TEAL, WHITE, YELLOW
+  Colors:
+    - "WHITE"
+    - "BLACK"
+    - "GRAY"
+    - "SILVER"

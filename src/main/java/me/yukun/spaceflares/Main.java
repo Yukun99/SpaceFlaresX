@@ -4,14 +4,20 @@ import java.util.Objects;
 import me.yukun.spaceflares.command.CommandManager;
 import me.yukun.spaceflares.config.FileManager;
 import me.yukun.spaceflares.config.Messages;
+import me.yukun.spaceflares.crate.CrateClickListener;
+import me.yukun.spaceflares.flare.FlareFireworkListener;
+import me.yukun.spaceflares.flare.FlareLandListener;
+import me.yukun.spaceflares.flare.FlareUseListener;
 import me.yukun.spaceflares.gui.RedeemGUI;
-import me.yukun.spaceflares.gui.RedeemGUIListener;
+import me.yukun.spaceflares.gui.handler.RedeemGUIListener;
+import me.yukun.spaceflares.gui.handler.RewardGUIListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -30,6 +36,15 @@ public class Main extends JavaPlugin implements Listener {
     }
     Objects.requireNonNull(getCommand("spaceflares")).setExecutor(new CommandManager());
     pm.registerEvents(new RedeemGUIListener(), this);
+    pm.registerEvents(new FlareUseListener(), this);
+    pm.registerEvents(new FlareFireworkListener(), this);
+    pm.registerEvents(new FlareLandListener(), this);
+    pm.registerEvents(new CrateClickListener(), this);
+    pm.registerEvents(new RewardGUIListener(), this);
+  }
+
+  public static Plugin getPlugin() {
+    return Bukkit.getPluginManager().getPlugin("SpaceFlares");
   }
 
   @Override
@@ -39,6 +54,8 @@ public class Main extends JavaPlugin implements Listener {
     }
     FileManager.onDisable();
     RedeemGUI.onDisable();
+    FlareLandListener.onDisable();
+    CrateClickListener.onDisable();
   }
 
   @EventHandler

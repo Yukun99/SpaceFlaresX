@@ -47,7 +47,21 @@ public class RedeemGUI {
     openGUI();
   }
 
+  /**
+   * Closes GUIs and unsaves them on plugin disable.
+   */
   public static void onDisable() {
+    clearAllRedeemGUIs();
+  }
+
+  /**
+   * Closes GUIs and unsaves them on plugin reload.
+   */
+  public static void onReload() {
+    clearAllRedeemGUIs();
+  }
+
+  private static void clearAllRedeemGUIs() {
     for (RedeemGUI gui : guis.values()) {
       gui.closeGUI();
     }
@@ -137,6 +151,7 @@ public class RedeemGUI {
     refreshGUI();
   }
 
+  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   public static boolean isRedeemGUIClickEvent(InventoryClickEvent e) {
     return e.getClickedInventory() != null && guis.containsKey(e.getClickedInventory());
   }

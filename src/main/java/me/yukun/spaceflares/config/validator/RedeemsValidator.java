@@ -1,11 +1,9 @@
 package me.yukun.spaceflares.config.validator;
 
 import java.util.Objects;
-import java.util.UUID;
 import me.yukun.spaceflares.config.ConfigTypeEnum;
 import me.yukun.spaceflares.config.FieldTypeEnum;
 import me.yukun.spaceflares.config.FlareConfig;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class RedeemsValidator implements IValidator {
@@ -17,11 +15,6 @@ public class RedeemsValidator implements IValidator {
 
   private void validateSections(FileConfiguration config) throws ValidationException {
     for (String uuid : Objects.requireNonNull(config.getConfigurationSection("")).getKeys(false)) {
-      if (Bukkit.getPlayer(UUID.fromString(uuid)) == null) {
-        throw new ValidationException(
-            ValidationException.getErrorMessage(ConfigTypeEnum.REDEEMS, FieldTypeEnum.SECTION,
-                uuid));
-      }
       validateFields(config, uuid);
     }
   }

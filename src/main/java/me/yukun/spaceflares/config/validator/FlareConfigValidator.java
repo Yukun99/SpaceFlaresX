@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import me.yukun.spaceflares.config.ConfigTypeEnum;
 import me.yukun.spaceflares.config.FieldTypeEnum;
+import me.yukun.spaceflares.util.Fireworks;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -16,6 +17,7 @@ public class FlareConfigValidator implements IValidator {
     add("Announce");
     add("Fall");
     add("Random");
+    add("Firework");
   }};
 
   private final Map<String, FieldTypeEnum> FIELDS = new HashMap<>(13) {{
@@ -29,6 +31,8 @@ public class FlareConfigValidator implements IValidator {
     put("Item", FieldTypeEnum.MATERIAL);
     put("Name", FieldTypeEnum.STRING);
     put("Lore", FieldTypeEnum.STRINGLIST);
+    put("Firework.Type", FieldTypeEnum.FIREWORK);
+    put("Firework.Colors", FieldTypeEnum.COLOR);
   }};
 
   private final Map<String, FieldTypeEnum> TIER_PLACEHOLDER_FIELDS = new HashMap<>(2) {{
@@ -46,7 +50,7 @@ public class FlareConfigValidator implements IValidator {
     for (String section : SECTIONS) {
       if (!config.isConfigurationSection(section)) {
         throw new ValidationException(
-            ValidationException.getErrorMessage(ConfigTypeEnum.CONFIG, FieldTypeEnum.SECTION,
+            ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.SECTION,
                 section));
       }
     }
@@ -63,7 +67,7 @@ public class FlareConfigValidator implements IValidator {
       throws ValidationException {
     if (!config.isString(field)) {
       throw new ValidationException(
-          ValidationException.getErrorMessage(ConfigTypeEnum.REDEEMS, FieldTypeEnum.STRING, field));
+          ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.STRING, field));
     }
     if (TIER_PLACEHOLDER_FIELDS.containsKey(field)) {
       return;
@@ -71,7 +75,7 @@ public class FlareConfigValidator implements IValidator {
     String placeholder = "%tier%";
     if (Objects.requireNonNull(config.getString(field)).contains(placeholder)) {
       throw new ValidationException(
-          ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.REDEEMS,
+          ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.FLARES,
               FieldTypeEnum.STRING,
               field, placeholder));
     }
@@ -82,7 +86,7 @@ public class FlareConfigValidator implements IValidator {
       throws ValidationException {
     if (!config.isInt(field)) {
       throw new ValidationException(
-          ValidationException.getErrorMessage(ConfigTypeEnum.REDEEMS, FieldTypeEnum.INTEGER,
+          ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.INTEGER,
               field));
     }
   }
@@ -92,7 +96,7 @@ public class FlareConfigValidator implements IValidator {
       throws ValidationException {
     if (!config.isBoolean(field)) {
       throw new ValidationException(
-          ValidationException.getErrorMessage(ConfigTypeEnum.REDEEMS, FieldTypeEnum.BOOLEAN,
+          ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.BOOLEAN,
               field));
     }
   }
@@ -102,7 +106,7 @@ public class FlareConfigValidator implements IValidator {
       throws ValidationException {
     if (!config.isList(field)) {
       throw new ValidationException(
-          ValidationException.getErrorMessage(ConfigTypeEnum.REDEEMS, FieldTypeEnum.STRINGLIST,
+          ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.STRINGLIST,
               field));
     }
     if (TIER_PLACEHOLDER_FIELDS.containsKey(field)) {
@@ -113,7 +117,7 @@ public class FlareConfigValidator implements IValidator {
     for (String line : fieldList) {
       if (line.contains(placeholder)) {
         throw new ValidationException(
-            ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.REDEEMS,
+            ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.FLARES,
                 FieldTypeEnum.STRINGLIST,
                 field, placeholder));
       }
@@ -125,15 +129,49 @@ public class FlareConfigValidator implements IValidator {
       throws ValidationException {
     if (!config.isString(field)) {
       throw new ValidationException(
-          ValidationException.getErrorMessage(ConfigTypeEnum.REDEEMS, FieldTypeEnum.MATERIAL,
+          ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.MATERIAL,
               field));
     }
     String materialName = config.getString(field);
     assert materialName != null;
     if (Material.getMaterial(materialName) == null) {
       throw new ValidationException(
-          ValidationException.getErrorMessage(ConfigTypeEnum.REDEEMS, FieldTypeEnum.MATERIAL,
+          ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.MATERIAL,
               field));
+    }
+  }
+
+  @Override
+  public void validateFireworkField(FileConfiguration config, String field)
+      throws ValidationException {
+    if (!config.isString(field)) {
+      throw new ValidationException(
+          ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.FIREWORK,
+              field));
+    }
+    String fireworkType = config.getString(field);
+    assert fireworkType != null;
+    if (Fireworks.getType(fireworkType) == null) {
+      throw new ValidationException(
+          ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.FIREWORK,
+              field));
+    }
+  }
+
+  @Override
+  public void validateColorField(FileConfiguration config, String field)
+      throws ValidationException {
+    if (!config.isList(field)) {
+      throw new ValidationException(
+          ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.COLOR,
+              field));
+    }
+    for (String colorName : config.getStringList(field)) {
+      if (Fireworks.getColor(colorName) == null) {
+        throw new ValidationException(
+            ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.COLOR,
+                field));
+      }
     }
   }
 }

@@ -7,24 +7,34 @@
 # Item type of crate block.
 # List of types for LATEST version: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 # Please Google for the javadocs for older Minecraft versions, or just ask in the plugin thread :)
+# Please make sure this is a PLACEABLE BLOCK. (no tools, armour, etc.)
 Block: "CHEST"
 # Settings for giving crate contents instantly.
 # Note that non item rewards will be given instantly regardless of this setting.
 FastClaim:
   # Whether to drop items or add them to inventory when fast claiming.
-  # True = drop items, False = add to inventory, but drop extra if inventory full
-  Drop: False
-  # Whether to give crate contents instantly only if player is sneaking when clicking the crate.
+  # True = drop items, False = add to inventory, but drop extra if inventory full.
+  Drop: True
+  # Whether to give crate contents instantly if player exits rewards inventory.
+  # If false, this just closes the rewards inventory.
+  Exit: True
+  # Whether to give crate contents instantly if player is sneaking when clicking the crate.
+  # This setting will override the default Punch/Use settings when player is sneaking.
+  # If false, this opens the rewards inventory.
   Sneak: True
   # Whether to give crate contents instantly if player left clicks the crate.
-  Punch: True
+  # If false, this opens the rewards inventory.
+  Punch: False
   # Whether to give crate contents instantly of player right clicks the crate.
+  # If false, this opens the rewards inventory.
   Use: False
 # Settings for despawning crates.
 Despawn:
   Enable: True # Whether to despawn crates after set time.
   Time: 60 # Time in seconds before crate despawns.
-  Give: True # Whether to automatically give items to flare user on despawn.
+  # Whether to automatically fast drop items as if flare user claimed it on despawn.
+  # If false, crate just disappears without anything happening.
+  Give: True
 
 ##################
 # Reward Options #
@@ -39,7 +49,7 @@ Rewards:
   # I suggest you comment this out for future reference instead of deleting it.
   Reward1:
     Type: "ITEM" # Available types: ITEM, COMMAND
-    Chance: 10 # Percentage chance out of 100 for this reward to be in the crate. Minimum 1.
+    Chance: 100 # Percentage chance out of 100 for this reward to be in the crate. Minimum 1.
     Amount: 10 # Amount of item to be rewarded.
     Item: "DIAMOND" # Item type of item reward.
     Name: "&c&lBLOOD DIAMOND" # Name of item reward. (Can be deleted for no custom name)
@@ -50,7 +60,7 @@ Rewards:
   # I suggest you comment this out for future reference instead of deleting it.
   Reward2:
     Type: "COMMAND" # Available types: ITEM, COMMAND
-    Chance: 20 # Percentage chance out of 100 for this reward to be in the crate.
+    Chance: 50 # Percentage chance out of 100 for this reward to be in the crate.
     Commands: # Commands to run to reward player.
-      - "say %player% is really lucky!"
+      - "say %player% is lucky!"
       - "give %player% minecraft:emerald 4"

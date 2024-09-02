@@ -1,5 +1,9 @@
 package me.yukun.spaceflares.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,32 +17,45 @@ public class InventoryHandler {
    * @return Items that could not be added to player's inventory due to fullness, null if not full.
    */
   public static ItemStack tryAddItems(Player player, ItemStack item) {
-    // Empty slot found, add item.
-    if (player.getInventory().firstEmpty() != -1) {
-      player.getInventory().addItem(item);
+    Collection<ItemStack> overflows = player.getInventory().addItem(item).values();
+    if (overflows.isEmpty()) {
       return null;
     }
-    int remain = item.getAmount();
-    for (ItemStack invenItem : player.getInventory().getContents()) {
-      // Check if item needs to be added.
-      if (remain == 0) {
-        return null;
-      }
-      // Check if inventory item exists and is similar.
-      if (invenItem == null || !invenItem.isSimilar(item)) {
-        continue;
-      }
-      // Item is similar, get possible added amount.
-      int empty = 64 - invenItem.getAmount();
-      int added = Math.min(remain, empty);
-      ItemStack addedItem = item.clone();
-      addedItem.setAmount(added);
-      // Add item.
-      player.getInventory().addItem(addedItem);
-      // Reduce remaining amount.
-      remain -= added;
+    ItemStack remainItem = null;
+    for (ItemStack overflow : overflows) {
+      remainItem = overflow.clone();
     }
-    item.setAmount(remain);
-    return item;
+    return remainItem;
+  }
+
+  /**
+   * Gets items held by player in main/off hand.
+   * <p>Only gets main hand item for versions below 1.9.</p>
+   *
+   * @param player Player to get held items for.
+   * @return List of items held by player, first item being mainhand and second item being offhand.
+   */
+  @SuppressWarnings("deprecation")
+  public static List<ItemStack> getItemsInHand(Player player) {
+    List<ItemStack> items = new ArrayList<>();
+    if (getVersion() >= 191) {
+      items.add(player.getInventory().getItemInMainHand());
+      items.add(player.getInventory().getItemInOffHand());
+    } else {
+      items.add(player.getItemInHand());
+    }
+    return items;
+  }
+
+  /**
+   * Simple version name to int converter.
+   *
+   * @return Version number as a simple integer.
+   */
+  private static Integer getVersion() {
+    String ver = Bukkit.getServer().getVersion();
+    ver = ver.split("-")[0];
+    ver = ver.replaceAll("\\.", "");
+    return Integer.parseInt(ver);
   }
 }

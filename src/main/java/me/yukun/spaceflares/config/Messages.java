@@ -73,8 +73,8 @@ public class Messages {
     receive = prefix + config.getString("Receive");
     receiveFull = prefix + config.getString("ReceiveFull");
     noSummon = prefix + config.getString("NoSummon");
-    despawnNotify = prefix + config.getString("DespawnNotify");
-    despawnItems = prefix + config.getString("DespawnItems");
+    despawnNotify = prefix + config.getString("Despawn.Notify");
+    despawnItems = config.getString("Despawn.Items");
     redeem = prefix + config.getString("Redeem");
     redeemFull = prefix + config.getString("RedeemFull");
   }
@@ -261,9 +261,9 @@ public class Messages {
    */
   private static String getLocation(Location loc) {
     String message = locP.replaceAll("%world%", Objects.requireNonNull(loc.getWorld()).getName());
-    message = message.replaceAll("%x%", String.valueOf(loc.getX()));
-    message = message.replaceAll("%y%", String.valueOf(loc.getY()));
-    return message.replaceAll("%z%", String.valueOf(loc.getZ()));
+    message = message.replaceAll("%x%", String.valueOf((int) loc.getX()));
+    message = message.replaceAll("%y%", String.valueOf((int) loc.getY()));
+    return message.replaceAll("%z%", String.valueOf((int) loc.getZ()));
   }
 
   /**
@@ -512,6 +512,10 @@ public class Messages {
 
   private static String replaceLoc(String line, Location loc) {
     return line.replaceAll("%loc%", getLocation(loc));
+  }
+
+  public static String replacePlayer(String line, Player player) {
+    return line.replaceAll("%player%", getPlayerName(player));
   }
 
   private static String replaceTierLoc(String line, String tier, Location loc) {

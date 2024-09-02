@@ -73,7 +73,10 @@ public class FileManager {
       validateConfigMap.get(configType).accept(configType);
       FlareConfig.setup();
     });
-    put(ConfigTypeEnum.CRATES, configType -> validateConfigMap.get(configType).accept(configType));
+    put(ConfigTypeEnum.CRATES, configType -> {
+      validateConfigMap.get(configType).accept(configType);
+      CrateConfig.setup();
+    });
   }};
 
   // Files and FileConfigurations
@@ -269,7 +272,7 @@ public class FileManager {
   private void loadCrateConfig(String name) throws IOException {
     File crateFile = createFile("crates/" + name + ".yml");
     FileConfiguration crateConfig = YamlConfiguration.loadConfiguration(crateFile);
-    new CrateConfig(name, crateConfig);
+    new CrateConfig(name, crateConfig, crateFile);
   }
 
   /**

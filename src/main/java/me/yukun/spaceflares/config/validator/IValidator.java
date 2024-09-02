@@ -30,6 +30,8 @@ public interface IValidator {
       case STRINGLIST -> validateStringListField(config, field);
       case MATERIAL -> validateMaterialField(config, field);
       case REWARD -> validateRewardField(config, field);
+      case FIREWORK -> validateFireworkField(config, field);
+      case COLOR -> validateColorField(config, field);
       default -> {
       }
     }
@@ -105,5 +107,29 @@ public interface IValidator {
   default void validateRewardField(FileConfiguration config, String field)
       throws ValidationException {
     throw new ValidationException("No reward field!");
+  }
+
+  /**
+   * Validates a fiend with fieldType Firework.
+   *
+   * @param config Configuration file that field is supposed to be in.
+   * @param field  Field to be evaluated.
+   * @throws ValidationException If field is missing, has wrong fieldType, or extra placeholders.
+   */
+  default void validateFireworkField(FileConfiguration config, String field)
+      throws ValidationException {
+    throw new ValidationException("No firework field!");
+  }
+
+  /**
+   * Validates a fiend with fieldType Color.
+   *
+   * @param config Configuration file that field is supposed to be in.
+   * @param field  Field to be evaluated.
+   * @throws ValidationException If field is missing, has wrong fieldType, or extra placeholders.
+   */
+  default void validateColorField(FileConfiguration config, String field)
+      throws ValidationException {
+    throw new ValidationException("No color field!");
   }
 }

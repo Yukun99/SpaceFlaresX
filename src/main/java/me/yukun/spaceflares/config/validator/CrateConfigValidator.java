@@ -21,6 +21,7 @@ public class CrateConfigValidator implements IValidator {
   private final Map<String, FieldTypeEnum> FIELDS = new HashMap<>(9) {{
     put("Block", FieldTypeEnum.MATERIAL);
     put("FastClaim.Drop", FieldTypeEnum.BOOLEAN);
+    put("FastClaim.Exit", FieldTypeEnum.BOOLEAN);
     put("FastClaim.Sneak", FieldTypeEnum.BOOLEAN);
     put("FastClaim.Punch", FieldTypeEnum.BOOLEAN);
     put("FastClaim.Use", FieldTypeEnum.BOOLEAN);
