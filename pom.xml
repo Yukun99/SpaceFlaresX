@@ -6,7 +6,7 @@
 
   <groupId>me.yukun</groupId>
   <artifactId>SpaceFlaresX</artifactId>
-  <version>1.0.0a</version>
+  <version>1.0.0b</version>
 
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
@@ -20,6 +20,11 @@
     <repository>
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    </repository>
+    <!-- WorldGuard -->
+    <repository>
+      <id>sk89q-repo</id>
+      <url>https://maven.enginehub.org/repo/</url>
     </repository>
   </repositories>
 
@@ -36,6 +41,13 @@
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
       <version>1.20.4-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- WorldGuard -->
+    <dependency>
+      <groupId>com.sk89q.worldguard</groupId>
+      <artifactId>worldguard-bukkit</artifactId>
+      <version>7.0.10</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

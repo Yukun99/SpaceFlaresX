@@ -1,9 +1,9 @@
 name: SpaceFlares
 author: Yukun
 main: me.yukun.spaceflares.Main
-version: 1.0.0a
+version: 1.0.0b
 api-version: 1.20
-softdepend: []
+softdepend: [WorldGuard]
 description: >
   A plugin to give players flares that can summon falling loot boxes.
 commands:

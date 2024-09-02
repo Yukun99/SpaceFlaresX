@@ -189,7 +189,7 @@ public class CrateConfig {
     for (ItemStack reward : itemRewardChanceMap.keySet()) {
       int chance = itemRewardChanceMap.get(reward) - 1;
       int roll = random.nextInt(100);
-      if (roll > chance) {
+      if (chance > roll) {
         rewards.add(reward);
       }
     }
