@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import me.yukun.spaceflares.Main;
+import me.yukun.spaceflares.SpaceFlares;
 import me.yukun.spaceflares.config.CrateConfig;
 import me.yukun.spaceflares.config.FlareConfig;
 import me.yukun.spaceflares.config.Messages;
@@ -28,7 +28,7 @@ public class FlareUseListener implements Listener {
   private static final Map<FallingBlock, Integer> blockTimerMap = new HashMap<>();
 
   private static void startFireworks(FallingBlock fallingBlock, String flare) {
-    int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), () -> {
+    int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(SpaceFlares.getPlugin(), () -> {
       Location loc = fallingBlock.getLocation();
       Firework firework = Fireworks.spawnFirework(loc, flare);
       FlareFireworkListener.registerFirework(firework);
@@ -51,19 +51,35 @@ public class FlareUseListener implements Listener {
     Player player = e.getPlayer();
     List<ItemStack> heldItems = InventoryHandler.getItemsInHand(player);
     boolean isMainFlare = FlareConfig.getFlareFromItem(heldItems.get(0)) != null;
-    String flare = isMainFlare
-        ? FlareConfig.getFlareFromItem(heldItems.get(0))
-        : FlareConfig.getFlareFromItem(heldItems.get(1));
+    String flare = getFlare(heldItems, isMainFlare);
     if (!SupportManager.canSpawnFlare(player, flare)) {
       Messages.sendNoSummon(player);
       return;
     }
+    consumeFlare(heldItems, isMainFlare);
+    summonFlare(player, flare);
+  }
+
+  private String getFlare(List<ItemStack> heldItems, boolean isMainFlare) {
+    return isMainFlare
+        ? FlareConfig.getFlareFromItem(heldItems.get(0))
+        : FlareConfig.getFlareFromItem(heldItems.get(1));
+  }
+
+  private void consumeFlare(List<ItemStack> heldItems, boolean isMainFlare) {
     if (isMainFlare) {
       heldItems.get(0).setAmount(heldItems.get(0).getAmount() - 1);
     } else {
       heldItems.get(1).setAmount(heldItems.get(1).getAmount() - 1);
     }
+  }
+
+  private void summonFlare(Player player, String flare) {
     Location location = FlareConfig.getFlareSpawnLocation(flare, player);
+    summonFlare(player, flare, location);
+  }
+
+  public static void summonFlare(Player player, String flare, Location location) {
     BlockData flareBlockData = CrateConfig.getCrateBlock(flare);
     FallingBlock flareBlock = Objects.requireNonNull(location.getWorld())
         .spawnFallingBlock(location, flareBlockData);

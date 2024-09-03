@@ -22,7 +22,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends JavaPlugin implements Listener {
+public class SpaceFlares extends JavaPlugin implements Listener {
 
   private boolean isConfigErrored = false;
 
@@ -45,7 +45,7 @@ public class Main extends JavaPlugin implements Listener {
   }
 
   public static Plugin getPlugin() {
-    return Bukkit.getPluginManager().getPlugin("SpaceFlares");
+    return JavaPlugin.getPlugin(SpaceFlares.class);
   }
 
   @Override

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import me.yukun.spaceflares.Main;
+import me.yukun.spaceflares.SpaceFlares;
 import me.yukun.spaceflares.config.FlareConfig;
 import me.yukun.spaceflares.flare.FlareFireworkListener;
 import org.bukkit.Bukkit;
@@ -43,9 +43,9 @@ public class Fireworks {
 
   private static void detonate(Firework firework) {
     Bukkit.getServer().getScheduler()
-        .scheduleSyncDelayedTask(Main.getPlugin(), firework::detonate, 1L);
+        .scheduleSyncDelayedTask(SpaceFlares.getPlugin(), firework::detonate, 1L);
     Bukkit.getServer().getScheduler()
-        .scheduleSyncDelayedTask(Main.getPlugin(),
+        .scheduleSyncDelayedTask(SpaceFlares.getPlugin(),
             () -> FlareFireworkListener.deregisterFirework(firework), 2L);
   }
 

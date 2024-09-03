@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import me.yukun.spaceflares.Main;
+import me.yukun.spaceflares.SpaceFlares;
 import me.yukun.spaceflares.config.CrateConfig;
 import me.yukun.spaceflares.gui.RewardGUI;
 import me.yukun.spaceflares.gui.event.RewardGUIEmptyEvent;
@@ -87,7 +87,7 @@ public class RewardGUIListener implements Listener {
   }
 
   private void scheduleForDeregister(Inventory inventory) {
-    Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> {
+    Bukkit.getScheduler().scheduleSyncDelayedTask(SpaceFlares.getPlugin(), () -> {
       if (inventory.isEmpty()) {
         deregisterGUIEvent(inventory);
       }

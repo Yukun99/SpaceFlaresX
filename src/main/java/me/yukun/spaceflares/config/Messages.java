@@ -38,6 +38,11 @@ public class Messages {
   private static final String HELP_GIVE2 = "/spaceflares give (player) (flare): Give player 1 flare of specified tier.";
   private static final String HELP_GIVE3 = "/spaceflares give (flare) (amount): Give yourself (amount) flares of specified tier.";
   private static final String HELP_GIVE4 = "/spaceflares give (flare): Give yourself 1 flare of specified tier.";
+  private static final String HELP_SUMMON1 = "/spaceflares summon (flare) (x) (y) (z): Summons flare of specified tier at specified coordinates.";
+  private static final String HELP_SUMMON2 = "/spaceflares summon (flare) ~ ~ ~: Summons flare of specified tier at own coordinates.";
+  private static final String HELP_SUMMON3 = "/spaceflares summon (flare) ~x ~y ~z: Summons flare of specified tier at own coordinates with offsets.";
+  private static final String HELP_SUMMON4 = "  - Any of the above coordinate formats can be mixed, including negative numbers.";
+  private static final String HELP_SUMMON5 = "  - Example: '/spaceflares summon Example 1 ~ ~-24' is a valid command.";
   private static final String HELP_RELOAD = "/spaceflares reload: Reloads all configuration files.";
   private static final String HELP_PERMISSIONS = "&b&l----------Permissions----------";
   private static final String HELP_WILDCARD_P = "spaceflares.*: All permissions combined";
@@ -45,6 +50,7 @@ public class Messages {
   private static final String HELP_HELP_P = "spaceflares.help: Ability to use help command.";
   private static final String HELP_REDEEM_P = "spaceflares.redeem: Ability to use redeem command.";
   private static final String HELP_GIVE_P = "spaceflares.give: Ability to use give command.";
+  private static final String HELP_SUMMON_P = "spaceflares.summon: Ability to use summon command.";
   private static final String HELP_RELOAD_P = "spaceflares.reload: Ability to use reload command.";
   private static final String HELP_FOOTER = "&b&l======================================";
   private static final String RELOAD_SUCCESS = "&aReload successful!";
@@ -244,6 +250,13 @@ public class Messages {
       sender.sendMessage(applyColor(HELP_GIVE3));
       sender.sendMessage(applyColor(HELP_GIVE4));
     }
+    if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.SUMMON)) {
+      sender.sendMessage(applyColor(HELP_SUMMON1));
+      sender.sendMessage(applyColor(HELP_SUMMON2));
+      sender.sendMessage(applyColor(HELP_SUMMON3));
+      sender.sendMessage(applyColor(HELP_SUMMON4));
+      sender.sendMessage(applyColor(HELP_SUMMON5));
+    }
     if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.RELOAD)) {
       sender.sendMessage(applyColor(HELP_RELOAD));
     }
@@ -254,6 +267,7 @@ public class Messages {
       sender.sendMessage(applyColor(HELP_HELP_P));
       sender.sendMessage(applyColor(HELP_REDEEM_P));
       sender.sendMessage(applyColor(HELP_GIVE_P));
+      sender.sendMessage(applyColor(HELP_SUMMON_P));
       sender.sendMessage(applyColor(HELP_RELOAD_P));
     }
     sender.sendMessage(applyColor(HELP_FOOTER));
@@ -554,8 +568,7 @@ public class Messages {
     return message;
   }
 
-  private static String replaceTierTimeLoc(String line, String tier, int time,
-      Location loc) {
+  private static String replaceTierTimeLoc(String line, String tier, int time, Location loc) {
     String message = line.replaceAll("%tier%", FlareConfig.getFlareTier(tier));
     message = message.replaceAll("%time%", String.valueOf(time));
     message = message.replaceAll("%loc%", getLocation(loc));

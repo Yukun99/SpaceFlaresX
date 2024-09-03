@@ -4,7 +4,7 @@ import static me.yukun.spaceflares.util.InventoryHandler.tryAddItems;
 
 import java.util.HashMap;
 import java.util.Map;
-import me.yukun.spaceflares.Main;
+import me.yukun.spaceflares.SpaceFlares;
 import me.yukun.spaceflares.config.CrateConfig;
 import me.yukun.spaceflares.config.FlareConfig;
 import me.yukun.spaceflares.config.Messages;
@@ -129,7 +129,7 @@ public class FlareLandListener implements Listener {
     if (despawnTime == 0) {
       return null;
     }
-    return Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(),
+    return Bukkit.getScheduler().scheduleSyncDelayedTask(SpaceFlares.getPlugin(),
         () -> CrateClickListener.despawnCrate(block), despawnTime * 20L);
   }
 }

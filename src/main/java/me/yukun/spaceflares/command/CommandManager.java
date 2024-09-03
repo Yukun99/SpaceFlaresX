@@ -34,6 +34,12 @@ public class CommandManager implements CommandExecutor {
           captchaCommand = GiveCommand.parseGiveCommand(sender, args);
         }
       }
+      case 5 -> {
+        if (args[0].equals("summon")) {
+          hasPermission = hasCommandPermissions(sender, CommandTypeEnum.SUMMON);
+          captchaCommand = SummonCommand.parseSummonCommand(sender, args);
+        }
+      }
     }
     if (captchaCommand instanceof HelpCommand) {
       hasPermission = hasCommandPermissions(sender, CommandTypeEnum.HELP);
