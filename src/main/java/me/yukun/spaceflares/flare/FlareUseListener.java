@@ -8,6 +8,7 @@ import me.yukun.spaceflares.Main;
 import me.yukun.spaceflares.config.CrateConfig;
 import me.yukun.spaceflares.config.FlareConfig;
 import me.yukun.spaceflares.config.Messages;
+import me.yukun.spaceflares.integration.SupportManager;
 import me.yukun.spaceflares.util.Fireworks;
 import me.yukun.spaceflares.util.InventoryHandler;
 import org.bukkit.Bukkit;
@@ -53,6 +54,10 @@ public class FlareUseListener implements Listener {
     String flare = isMainFlare
         ? FlareConfig.getFlareFromItem(heldItems.get(0))
         : FlareConfig.getFlareFromItem(heldItems.get(1));
+    if (!SupportManager.canSpawnFlare(player, flare)) {
+      Messages.sendNoSummon(player);
+      return;
+    }
     if (isMainFlare) {
       heldItems.get(0).setAmount(heldItems.get(0).getAmount() - 1);
     } else {

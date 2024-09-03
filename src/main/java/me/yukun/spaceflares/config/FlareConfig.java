@@ -137,6 +137,14 @@ public class FlareConfig {
     return nameConfigMap.get(flare).getSpawnLocation(player);
   }
 
+  public static int getFlareRandomRadius(String flare) {
+    return nameConfigMap.get(flare).getRandomRadius();
+  }
+
+  public static int getFlareFallHeight(String flare) {
+    return nameConfigMap.get(flare).getFallHeight();
+  }
+
   /**
    * Gets list of firework colours of specified flare type.
    *
@@ -155,6 +163,22 @@ public class FlareConfig {
    */
   public static Type getFlareFireworkType(String flare) {
     return nameConfigMap.get(flare).getFireworkType();
+  }
+
+  public static List<String> getFlareRegionWGList(String flare) {
+    return nameConfigMap.get(flare).getRegionWGList();
+  }
+
+  public static boolean getFlareRegionWGDoPvPFlag(String flare) {
+    return nameConfigMap.get(flare).getRegionWGDoPvPFlag();
+  }
+
+  public static boolean getFlareRegionWGDoNoBuild(String flare) {
+    return nameConfigMap.get(flare).getRegionWGDoNoBuild();
+  }
+
+  public static boolean getFlareRegionUseWarzone(String flare) {
+    return nameConfigMap.get(flare).getRegionUseWarzone();
   }
 
   private String getTierName() {
@@ -226,5 +250,28 @@ public class FlareConfig {
 
   private Type getFireworkType() {
     return Type.valueOf(config.getString("Firework.Type"));
+  }
+
+  private boolean useRegionWGList() {
+    return config.getBoolean("Region.WorldGuard.Enable");
+  }
+
+  private List<String> getRegionWGList() {
+    if (!useRegionWGList()) {
+      return new ArrayList<>();
+    }
+    return config.getStringList("Region.WorldGuard.List");
+  }
+
+  private boolean getRegionWGDoPvPFlag() {
+    return config.getBoolean("Region.WorldGuard.PvPFlag");
+  }
+
+  private boolean getRegionWGDoNoBuild() {
+    return config.getBoolean("Region.WorldGuard.NoBuild");
+  }
+
+  private boolean getRegionUseWarzone() {
+    return config.getBoolean("Region.Warzone");
   }
 }

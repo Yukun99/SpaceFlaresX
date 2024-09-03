@@ -11,6 +11,7 @@ import me.yukun.spaceflares.flare.FlareUseListener;
 import me.yukun.spaceflares.gui.RedeemGUI;
 import me.yukun.spaceflares.gui.handler.RedeemGUIListener;
 import me.yukun.spaceflares.gui.handler.RewardGUIListener;
+import me.yukun.spaceflares.integration.SupportManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -65,6 +66,12 @@ public class Main extends JavaPlugin implements Listener {
       return;
     }
     Messages.sendPluginVersion(player, this);
+    if (SupportManager.hasWorldGuard()) {
+      Messages.sendIntegrationEnabled(player, "WorldGuard");
+    }
+    if (SupportManager.hasFactions()) {
+      Messages.sendIntegrationEnabled(player, "Factions");
+    }
     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
     if (isConfigErrored) {
       Messages.sendConfigError(player);

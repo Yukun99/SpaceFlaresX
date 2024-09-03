@@ -36,6 +36,22 @@ Lore:
   - "&fIt seems to buzz with energy..."
   - "&fWhat happens if I use it?"
 
+##################
+# Region Options #
+##################
+# With both WorldGuard and Factions enabled, EITHER listed region OR Warzone allows flare summon.
+# With both WorldGuard and Factions disabled/missing, any location allows flare summon.
+Region:
+  WorldGuard:
+    Enable: True # Whether flare must be summoned in WorldGuard regions listed below.
+    # WorldGuard regions where flare must be summoned in.
+    # A player must be in at least 1 of these regions to summon flare.
+    List:
+      - "Warzone"
+    PvPFlag: True # Whether player must be in a PvP flag enabled area to summon flare.
+    NoBuild: True # Whether player must be in a build flag disabled area to summon flare.
+  Warzone: True # Whether flare must be summoned in Factions Warzones.
+
 ####################
 # Firework Options #
 ####################

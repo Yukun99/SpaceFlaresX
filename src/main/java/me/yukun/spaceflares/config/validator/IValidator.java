@@ -32,6 +32,7 @@ public interface IValidator {
       case REWARD -> validateRewardField(config, field);
       case FIREWORK -> validateFireworkField(config, field);
       case COLOR -> validateColorField(config, field);
+      case REGION -> validateRegionField(config, field);
       default -> {
       }
     }
@@ -131,5 +132,17 @@ public interface IValidator {
   default void validateColorField(FileConfiguration config, String field)
       throws ValidationException {
     throw new ValidationException("No color field!");
+  }
+
+  /**
+   * Validates a fiend with fieldType Region.
+   *
+   * @param config Configuration file that field is supposed to be in.
+   * @param field  Field to be evaluated.
+   * @throws ValidationException If field is missing, has wrong fieldType, or extra placeholders.
+   */
+  default void validateRegionField(FileConfiguration config, String field)
+      throws ValidationException {
+    throw new ValidationException("No region field!");
   }
 }

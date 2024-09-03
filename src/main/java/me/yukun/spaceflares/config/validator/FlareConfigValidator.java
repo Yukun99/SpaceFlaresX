@@ -7,20 +7,23 @@ import java.util.Map;
 import java.util.Objects;
 import me.yukun.spaceflares.config.ConfigTypeEnum;
 import me.yukun.spaceflares.config.FieldTypeEnum;
+import me.yukun.spaceflares.integration.SupportManager;
 import me.yukun.spaceflares.util.Fireworks;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class FlareConfigValidator implements IValidator {
 
-  private final List<String> SECTIONS = new ArrayList<>(4) {{
+  private final List<String> SECTIONS = new ArrayList<>(6) {{
     add("Announce");
     add("Fall");
     add("Random");
     add("Firework");
+    add("Region");
+    add("Region.WorldGuard");
   }};
 
-  private final Map<String, FieldTypeEnum> FIELDS = new HashMap<>(13) {{
+  private final Map<String, FieldTypeEnum> FIELDS = new HashMap<>(16) {{
     put("TierName", FieldTypeEnum.STRING);
     put("Announce.Enable", FieldTypeEnum.BOOLEAN);
     put("Announce.Radius", FieldTypeEnum.INTEGER);
@@ -31,6 +34,11 @@ public class FlareConfigValidator implements IValidator {
     put("Item", FieldTypeEnum.MATERIAL);
     put("Name", FieldTypeEnum.STRING);
     put("Lore", FieldTypeEnum.STRINGLIST);
+    put("Region.WorldGuard.Enable", FieldTypeEnum.BOOLEAN);
+    put("Region.WorldGuard.List", FieldTypeEnum.REGION);
+    put("Region.WorldGuard.PvPFlag", FieldTypeEnum.BOOLEAN);
+    put("Region.WorldGuard.NoBuild", FieldTypeEnum.BOOLEAN);
+    put("Region.Warzone", FieldTypeEnum.BOOLEAN);
     put("Firework.Type", FieldTypeEnum.FIREWORK);
     put("Firework.Colors", FieldTypeEnum.COLOR);
   }};
@@ -170,6 +178,23 @@ public class FlareConfigValidator implements IValidator {
       if (Fireworks.getColor(colorName) == null) {
         throw new ValidationException(
             ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.COLOR,
+                field));
+      }
+    }
+  }
+
+  @Override
+  public void validateRegionField(FileConfiguration config, String field)
+      throws ValidationException {
+    if (!config.isList(field)) {
+      throw new ValidationException(
+          ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.REGION,
+              field));
+    }
+    for (String region : config.getStringList(field)) {
+      if (!SupportManager.isRegion(region)) {
+        throw new ValidationException(
+            ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.REGION,
                 field));
       }
     }
