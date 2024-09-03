@@ -16,38 +16,31 @@ public class CommandManager implements CommandExecutor {
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command,
       @NotNull String label, @NotNull String[] args) {
     SpaceFlaresCommand captchaCommand = new HelpCommand(sender);
+    boolean hasPermission = false;
     switch (args.length) {
       case 1 -> {
         if (args[0].equals("reload")) {
-          if (!hasCommandPermissions(sender, CommandTypeEnum.RELOAD)) {
-            Messages.sendNoPermission(sender);
-            return false;
-          }
+          hasPermission = hasCommandPermissions(sender, CommandTypeEnum.RELOAD);
           captchaCommand = new ReloadCommand(sender);
         }
         if (args[0].equals("redeem")) {
-          if (!hasCommandPermissions(sender, CommandTypeEnum.REDEEM)) {
-            Messages.sendNoPermission(sender);
-            return false;
-          }
+          hasPermission = hasCommandPermissions(sender, CommandTypeEnum.REDEEM);
           captchaCommand = RedeemCommand.parseRedeemCommand(sender);
         }
       }
       case 2, 3, 4 -> {
         if (args[0].equals("give")) {
-          if (!hasCommandPermissions(sender, CommandTypeEnum.GIVE)) {
-            Messages.sendNoPermission(sender);
-            return false;
-          }
+          hasPermission = hasCommandPermissions(sender, CommandTypeEnum.GIVE);
           captchaCommand = GiveCommand.parseGiveCommand(sender, args);
         }
       }
     }
     if (captchaCommand instanceof HelpCommand) {
-      if (!hasCommandPermissions(sender, CommandTypeEnum.HELP)) {
-        Messages.sendNoPermission(sender);
-        return false;
-      }
+      hasPermission = hasCommandPermissions(sender, CommandTypeEnum.HELP);
+    }
+    if (!hasPermission) {
+      Messages.sendNoPermission(sender);
+      return false;
     }
     return captchaCommand.execute();
   }
