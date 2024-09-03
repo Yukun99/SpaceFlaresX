@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import me.yukun.spaceflares.command.CommandManager;
+import me.yukun.spaceflares.command.CommandTypeEnum;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -30,9 +32,20 @@ public class Messages {
   private static final String HELP_HEADER = "&b&l===============SpaceFlares===============";
   private static final String HELP_COMMANDS = "&b&l----------Commands----------";
   private static final String HELP_ALIASES = "Command aliases: spaceflares, spaceflare, spacef, sflare, sf";
+  private static final String HELP_HELP = "/spaceflares help: Shows commands, aliases and permissions.";
+  private static final String HELP_REDEEM = "/spaceflares redeem: Opens flare redeeming GUI.";
+  private static final String HELP_GIVE1 = "/spaceflares give (player) (flare) (amount): Give player (amount) flares of specified tier.";
+  private static final String HELP_GIVE2 = "/spaceflares give (player) (flare): Give player 1 flare of specified tier.";
+  private static final String HELP_GIVE3 = "/spaceflares give (flare) (amount): Give yourself (amount) flares of specified tier.";
+  private static final String HELP_GIVE4 = "/spaceflares give (flare): Give yourself 1 flare of specified tier.";
+  private static final String HELP_RELOAD = "/spaceflares reload: Reloads all configuration files.";
   private static final String HELP_PERMISSIONS = "&b&l----------Permissions----------";
-  private static final String HELP_WILDCARD = "spaceflares.*: All permissions combined";
-  private static final String HELP_ADMIN = "spaceflares.admin: Ability to use commands";
+  private static final String HELP_WILDCARD_P = "spaceflares.*: All permissions combined";
+  private static final String HELP_ADMIN_P = "spaceflares.admin: Ability to use commands";
+  private static final String HELP_HELP_P = "spaceflares.help: Ability to use help command.";
+  private static final String HELP_REDEEM_P = "spaceflares.redeem: Ability to use redeem command.";
+  private static final String HELP_GIVE_P = "spaceflares.give: Ability to use give command.";
+  private static final String HELP_RELOAD_P = "spaceflares.reload: Ability to use reload command.";
   private static final String HELP_FOOTER = "&b&l======================================";
   private static final String RELOAD_SUCCESS = "&aReload successful!";
   private static final String NO_PERMISSION = "&cYou do not have permission to use the command!";
@@ -171,16 +184,6 @@ public class Messages {
   }
 
   /**
-   * Logging message during setup sent if specified plugin integration is enabled.
-   *
-   * @param integrationName Name of plugin to integrate with.
-   */
-  public static void printIntegrationEnabled(String integrationName) {
-    String message = prefix + INTEGRATION.replaceAll("%integration%", integrationName);
-    System.out.println(applyColor(message));
-  }
-
-  /**
    * Logging message during shutdown sent if specified file could not be saved.
    *
    * @param filename Filename of specified file.
@@ -223,34 +226,55 @@ public class Messages {
   /**
    * Send commands help message to command sender.
    *
-   * @param commandSender Command sender to send commands help message to.
+   * @param sender Command sender to send commands help message to.
    */
-  public static void sendHelp(CommandSender commandSender) {
-    commandSender.sendMessage(applyColor(HELP_HEADER));
-    commandSender.sendMessage(applyColor(HELP_COMMANDS));
-    commandSender.sendMessage(applyColor(HELP_ALIASES));
-    commandSender.sendMessage(applyColor(HELP_PERMISSIONS));
-    commandSender.sendMessage(applyColor(HELP_WILDCARD));
-    commandSender.sendMessage(applyColor(HELP_ADMIN));
-    commandSender.sendMessage(applyColor(HELP_FOOTER));
+  public static void sendHelp(CommandSender sender) {
+    sender.sendMessage(applyColor(HELP_HEADER));
+    sender.sendMessage(applyColor(HELP_COMMANDS));
+    sender.sendMessage(applyColor(HELP_ALIASES));
+    if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.HELP)) {
+      sender.sendMessage(applyColor(HELP_HELP));
+    }
+    if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.REDEEM)) {
+      sender.sendMessage(applyColor(HELP_REDEEM));
+    }
+    if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.GIVE)) {
+      sender.sendMessage(applyColor(HELP_GIVE1));
+      sender.sendMessage(applyColor(HELP_GIVE2));
+      sender.sendMessage(applyColor(HELP_GIVE3));
+      sender.sendMessage(applyColor(HELP_GIVE4));
+    }
+    if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.RELOAD)) {
+      sender.sendMessage(applyColor(HELP_RELOAD));
+    }
+    if (CommandManager.hasAdminPermissions(sender)) {
+      sender.sendMessage(applyColor(HELP_PERMISSIONS));
+      sender.sendMessage(applyColor(HELP_WILDCARD_P));
+      sender.sendMessage(applyColor(HELP_ADMIN_P));
+      sender.sendMessage(applyColor(HELP_HELP_P));
+      sender.sendMessage(applyColor(HELP_REDEEM_P));
+      sender.sendMessage(applyColor(HELP_GIVE_P));
+      sender.sendMessage(applyColor(HELP_RELOAD_P));
+    }
+    sender.sendMessage(applyColor(HELP_FOOTER));
   }
 
   /**
    * Send config reloaded message to command sender.
    *
-   * @param commandSender CommandSender to send reloaded message to.
+   * @param sender CommandSender to send reloaded message to.
    */
-  public static void sendReloadSuccess(CommandSender commandSender) {
-    commandSender.sendMessage(applyColor(prefix + RELOAD_SUCCESS));
+  public static void sendReloadSuccess(CommandSender sender) {
+    sender.sendMessage(applyColor(prefix + RELOAD_SUCCESS));
   }
 
   /**
    * Send no permission message to command sender.
    *
-   * @param commandSender CommandSender to send no permission message to.
+   * @param sender CommandSender to send no permission message to.
    */
-  public static void sendNoPermission(CommandSender commandSender) {
-    commandSender.sendMessage(applyColor(prefix + NO_PERMISSION));
+  public static void sendNoPermission(CommandSender sender) {
+    sender.sendMessage(applyColor(prefix + NO_PERMISSION));
   }
 
   /**
@@ -280,29 +304,29 @@ public class Messages {
   /**
    * Sends confirmation message for when flare give command is successfully used.
    *
-   * @param commandSender CommandSender to send confirmation message to.
-   * @param player        Player who was successfully given flares.
-   * @param tier          Tier of flares given to player.
-   * @param amount        Amount of flares given to player.
+   * @param sender CommandSender to send confirmation message to.
+   * @param player Player who was successfully given flares.
+   * @param tier   Tier of flares given to player.
+   * @param amount Amount of flares given to player.
    */
-  public static void sendGive(CommandSender commandSender, Player player, String tier, int amount) {
+  public static void sendGive(CommandSender sender, Player player, String tier, int amount) {
     String message = give.replaceAll("%player%", getPlayerName(player));
     message = message.replaceAll("%tier%", FlareConfig.getFlareTier(tier));
     message = message.replaceAll("%amount%", String.valueOf(amount));
-    commandSender.sendMessage(applyColor(message));
+    sender.sendMessage(applyColor(message));
   }
 
   /**
    * Sends message for when flares are sent to redeems because inventory is full.
    *
-   * @param commandSender CommandSender to send message to.
-   * @param player        Player who was successfully given flares.
-   * @param amount        Amount of flares sent to redeems inventory.
+   * @param sender CommandSender to send message to.
+   * @param player Player who was successfully given flares.
+   * @param amount Amount of flares sent to redeems inventory.
    */
-  public static void sendGiveFull(CommandSender commandSender, Player player, int amount) {
+  public static void sendGiveFull(CommandSender sender, Player player, int amount) {
     String message = giveFull.replaceAll("%player%", getPlayerName(player));
     message = message.replaceAll("%amount%", String.valueOf(amount));
-    commandSender.sendMessage(applyColor(message));
+    sender.sendMessage(applyColor(message));
   }
 
   /**

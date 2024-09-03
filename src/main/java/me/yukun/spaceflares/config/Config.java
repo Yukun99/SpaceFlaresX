@@ -5,7 +5,6 @@ import static me.yukun.spaceflares.util.TextFormatter.applyColor;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -60,13 +59,6 @@ public class Config {
     itemMeta.setDisplayName(name);
     itemMeta.setLore(lore);
     previousPageItem.setItemMeta(itemMeta);
-  }
-
-  public static boolean hasCommandPermissions(CommandSender sender) {
-    if (sender.hasPermission("spaceflares.*")) {
-      return true;
-    }
-    return sender.hasPermission("spaceflares.admin");
   }
 
   public static int getRedeemSize() {
