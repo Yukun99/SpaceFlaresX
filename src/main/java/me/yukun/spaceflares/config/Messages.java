@@ -418,11 +418,11 @@ public class Messages {
    *
    * @param player Player to send confirmation message to.
    * @param tier   Tier of flare summoned.
-   * @param time   Time before landed flare will despawn.
    * @param loc    Location where flare has landed.
    */
-  public static void sendLand(Player player, String tier, int time, Location loc) {
+  public static void sendLand(Player player, String tier, Location loc) {
     for (String line : land) {
+      int time = CrateConfig.getCrateDespawnTime(tier);
       String message = replaceTierTimeLoc(line, tier, time, loc);
       player.sendMessage(applyColor(message));
     }
@@ -433,15 +433,15 @@ public class Messages {
    *
    * @param player Player who summoned the flare.
    * @param tier   Tier of flare summoned.
-   * @param time   Time before landed flare will despawn.
    * @param loc    Location where flare has landed.
    */
-  public static void sendLandAll(Player player, String tier, int time, Location loc) {
+  public static void sendLandAll(Player player, String tier, Location loc) {
     if (!FlareConfig.getFlareDoAnnounce(tier)) {
       return;
     }
     int range = FlareConfig.getFlareAnnounceRange(tier);
     for (String line : landAll) {
+      int time = CrateConfig.getCrateDespawnTime(tier);
       String message = replacePlayerTierTimeLoc(line, player, tier, time, loc);
       for (Player other : getPlayersInRange(loc, range)) {
         if (other.equals(player)) {

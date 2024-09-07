@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender;
 
 public class SpaceFlaresCommand {
 
-  protected CommandSender sender;
+  protected final CommandSender sender;
 
   public SpaceFlaresCommand(CommandSender sender) {
     this.sender = sender;

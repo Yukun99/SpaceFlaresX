@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import me.yukun.spaceflares.SpaceFlares;
 import me.yukun.spaceflares.config.validator.FlareConfigValidator;
 import me.yukun.spaceflares.config.validator.ValidationException;
 import me.yukun.spaceflares.util.Fireworks;
@@ -15,15 +16,19 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 public class FlareConfig {
 
   private static final Map<String, FlareConfig> nameConfigMap = new HashMap<>();
+  private static final NamespacedKey flareKey = new NamespacedKey(SpaceFlares.getPlugin(), "Flare");
 
   private final String name;
   private FileConfiguration config;
@@ -67,6 +72,10 @@ public class FlareConfig {
     for (String line : config.getStringList("Lore")) {
       itemLore.add(applyColor(line.replaceAll("%tier%", name)));
     }
+
+    // Set item PDC
+    PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+    container.set(flareKey, PersistentDataType.STRING, name);
 
     // Apply item metadate
     itemMeta.setDisplayName(applyColor(itemName));
@@ -117,13 +126,16 @@ public class FlareConfig {
   }
 
   public static String getFlareFromItem(ItemStack item) {
-    for (String flare : nameConfigMap.keySet()) {
-      ItemStack flareItem = nameConfigMap.get(flare).getFlareItem();
-      if (flareItem.isSimilar(item)) {
-        return flare;
-      }
+    if (!item.hasItemMeta()) {
+      return null;
     }
-    return null;
+    ItemMeta itemMeta = item.getItemMeta();
+    assert itemMeta != null;
+    PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+    if (!container.has(flareKey)) {
+      return null;
+    }
+    return container.get(flareKey, PersistentDataType.STRING);
   }
 
   /**

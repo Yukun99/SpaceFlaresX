@@ -1,10 +1,8 @@
 package me.yukun.spaceflares.command;
 
-import static me.yukun.spaceflares.util.InventoryHandler.tryAddItems;
-
 import me.yukun.spaceflares.config.FlareConfig;
 import me.yukun.spaceflares.config.Messages;
-import me.yukun.spaceflares.config.Redeems;
+import me.yukun.spaceflares.util.InventoryHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,14 +12,12 @@ public class GiveCommand extends SpaceFlaresCommand {
 
   private final Player player;
   private final String flare;
-  private final ItemStack item;
   private int amount = 1;
 
   private GiveCommand(CommandSender sender, Player player, String flare, int amount) {
     super(sender);
     this.player = player;
     this.flare = flare;
-    this.item = FlareConfig.getFlareItem(this.flare);
     this.amount = amount;
   }
 
@@ -29,23 +25,17 @@ public class GiveCommand extends SpaceFlaresCommand {
     super(sender);
     this.player = player;
     this.flare = flare;
-    this.item = FlareConfig.getFlareItem(this.flare);
   }
 
   @Override
   public boolean execute() {
-    ItemStack given = item;
-    given.setAmount(amount);
-    ItemStack remainItem = tryAddItems(player, given);
     Messages.sendGive(sender, player, flare, amount);
-    Messages.sendReceive(player, flare, amount);
-    if (remainItem == null) {
-      return true;
+    ItemStack remain = InventoryHandler.giveFlare(player, flare, amount);
+    if (remain != null) {
+      Messages.sendGiveFull(sender, player, remain.getAmount());
+      Messages.sendReceiveFull(player, remain.getAmount());
+      return false;
     }
-    int remain = remainItem.getAmount();
-    Redeems.addRedeems(player, flare, remain);
-    Messages.sendGiveFull(sender, player, remain);
-    Messages.sendReceiveFull(player, remain);
     return true;
   }
 
@@ -88,6 +78,7 @@ public class GiveCommand extends SpaceFlaresCommand {
     return new HelpCommand(sender);
   }
 
+  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   private static boolean isValidAmount(String argument) {
     if (!isInt(argument)) {
       return false;

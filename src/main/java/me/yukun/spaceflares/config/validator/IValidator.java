@@ -6,14 +6,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 public interface IValidator {
 
   /**
-   * Validate specified configuration file according to spec.
-   *
-   * @param config Configuration file to be verified.
-   * @throws ValidationException If any field is missing or has wrong value type.
-   */
-  void validate(FileConfiguration config) throws ValidationException;
-
-  /**
    * Validate specified field in specified configuration file.
    *
    * @param fieldType Type that specified field is supposed to be.

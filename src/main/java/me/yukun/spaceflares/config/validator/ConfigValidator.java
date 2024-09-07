@@ -28,7 +28,6 @@ public class ConfigValidator implements IValidator {
     put("Previous.Lore", FieldTypeEnum.STRINGLIST);
   }};
 
-  @Override
   public void validate(FileConfiguration config) throws ValidationException {
     validateSections(config);
     validateFields(config);

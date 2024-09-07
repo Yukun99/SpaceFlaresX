@@ -42,7 +42,6 @@ public class CrateConfigValidator implements IValidator {
     put("Commands", FieldTypeEnum.STRINGLIST);
   }};
 
-  @Override
   public void validate(FileConfiguration config) throws ValidationException {
     validateSections(config);
     validateFields(config);

@@ -1,13 +1,34 @@
 package me.yukun.spaceflares.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import org.bukkit.Bukkit;
+import me.yukun.spaceflares.config.FlareConfig;
+import me.yukun.spaceflares.config.Messages;
+import me.yukun.spaceflares.config.Redeems;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryHandler {
+
+  /**
+   * Tries to give flares of specified tier and amount to specified player.
+   * <p>Excess flares will be sent to the redeems inventory.</p>
+   *
+   * @param player Player to give flares to.
+   * @param type   Type of flare to give.
+   * @param amount Amount of flares to give.
+   */
+  public static ItemStack giveFlare(Player player, String type, int amount) {
+    ItemStack given = FlareConfig.getFlareItem(type).clone();
+    given.setAmount(amount);
+    ItemStack remainItem = tryAddItems(player, given);
+    Messages.sendReceive(player, type, given.getAmount());
+    if (remainItem != null) {
+      int remain = remainItem.getAmount();
+      Redeems.addRedeems(player, type, remain);
+      Messages.sendReceiveFull(player, remain);
+    }
+    return remainItem;
+  }
 
   /**
    * Tries to add specified item to player's inventory.
@@ -26,36 +47,5 @@ public class InventoryHandler {
       remainItem = overflow.clone();
     }
     return remainItem;
-  }
-
-  /**
-   * Gets items held by player in main/off hand.
-   * <p>Only gets main hand item for versions below 1.9.</p>
-   *
-   * @param player Player to get held items for.
-   * @return List of items held by player, first item being mainhand and second item being offhand.
-   */
-  @SuppressWarnings("deprecation")
-  public static List<ItemStack> getItemsInHand(Player player) {
-    List<ItemStack> items = new ArrayList<>();
-    if (getVersion() >= 191) {
-      items.add(player.getInventory().getItemInMainHand());
-      items.add(player.getInventory().getItemInOffHand());
-    } else {
-      items.add(player.getItemInHand());
-    }
-    return items;
-  }
-
-  /**
-   * Simple version name to int converter.
-   *
-   * @return Version number as a simple integer.
-   */
-  private static Integer getVersion() {
-    String ver = Bukkit.getServer().getVersion();
-    ver = ver.split("-")[0];
-    ver = ver.replaceAll("\\.", "");
-    return Integer.parseInt(ver);
   }
 }

@@ -4,13 +4,14 @@ import java.util.Objects;
 import me.yukun.spaceflares.command.CommandManager;
 import me.yukun.spaceflares.config.FileManager;
 import me.yukun.spaceflares.config.Messages;
-import me.yukun.spaceflares.crate.CrateClickListener;
-import me.yukun.spaceflares.flare.FlareFireworkListener;
-import me.yukun.spaceflares.flare.FlareLandListener;
-import me.yukun.spaceflares.flare.FlareUseListener;
-import me.yukun.spaceflares.gui.RedeemGUI;
-import me.yukun.spaceflares.gui.handler.RedeemGUIListener;
-import me.yukun.spaceflares.gui.handler.RewardGUIListener;
+import me.yukun.spaceflares.flare.events.CrateClickListener;
+import me.yukun.spaceflares.flare.Flare;
+import me.yukun.spaceflares.flare.events.FlareFireworkListener;
+import me.yukun.spaceflares.flare.events.FlareLandListener;
+import me.yukun.spaceflares.flare.events.FlareUseListener;
+import me.yukun.spaceflares.redeem.RedeemGUI;
+import me.yukun.spaceflares.redeem.RedeemGUIListener;
+import me.yukun.spaceflares.flare.events.RewardGUIListener;
 import me.yukun.spaceflares.integration.SupportManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -55,8 +56,7 @@ public class SpaceFlares extends JavaPlugin implements Listener {
     }
     FileManager.onDisable();
     RedeemGUI.onDisable();
-    FlareLandListener.onDisable();
-    CrateClickListener.onDisable();
+    Flare.onDisable();
   }
 
   @EventHandler

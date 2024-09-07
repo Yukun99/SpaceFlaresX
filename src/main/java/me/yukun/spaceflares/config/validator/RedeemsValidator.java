@@ -8,7 +8,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class RedeemsValidator implements IValidator {
 
-  @Override
   public void validate(FileConfiguration config) throws ValidationException {
     validateSections(config);
   }

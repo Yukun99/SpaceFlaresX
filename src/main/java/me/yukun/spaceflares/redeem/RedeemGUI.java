@@ -1,4 +1,4 @@
-package me.yukun.spaceflares.gui;
+package me.yukun.spaceflares.redeem;
 
 import static me.yukun.spaceflares.util.TextFormatter.applyColor;
 
@@ -19,12 +19,13 @@ import org.bukkit.inventory.ItemStack;
 
 public class RedeemGUI {
 
+  private static final Map<Inventory, RedeemGUI> guis = new HashMap<>();
+
   private final Player player;
   private final Inventory gui;
   private List<Pair<String, Integer>> redeems;
-  private static final Map<Inventory, RedeemGUI> guis = new HashMap<>();
-  int page;
-  int last_page;
+  private int page;
+  private int last_page;
 
   public RedeemGUI(Player player) {
     // log player
@@ -118,6 +119,8 @@ public class RedeemGUI {
 
   public void reconvertRedeems(Player player) {
     redeems = convertRedeems(player);
+    int size = Config.getRedeemSize();
+    last_page = !redeems.isEmpty() ? redeems.size() / size + 1 : 0;
   }
 
   private List<Pair<String, Integer>> convertRedeems(Player player) {

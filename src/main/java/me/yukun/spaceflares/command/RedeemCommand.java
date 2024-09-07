@@ -1,12 +1,12 @@
 package me.yukun.spaceflares.command;
 
-import me.yukun.spaceflares.gui.RedeemGUI;
+import me.yukun.spaceflares.redeem.RedeemGUI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class RedeemCommand extends SpaceFlaresCommand {
 
-  Player player;
+  private final Player player;
 
   private RedeemCommand(CommandSender sender) {
     super(sender);

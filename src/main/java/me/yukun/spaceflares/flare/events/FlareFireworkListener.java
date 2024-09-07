@@ -1,4 +1,4 @@
-package me.yukun.spaceflares.flare;
+package me.yukun.spaceflares.flare.events;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -83,7 +83,6 @@ public class MessagesValidator implements IValidator {
     put("DespawnAll", FieldTypeEnum.STRINGLIST);
   }};
 
-  @Override
   public void validate(FileConfiguration messages) throws ValidationException {
     validateSections(messages);
     validateFields(messages);
@@ -108,36 +107,6 @@ public class MessagesValidator implements IValidator {
       validateLocField(messages, field);
     }
   }
-
-//  @Override
-//  public void validateStringListField(FileConfiguration messages, String field)
-//      throws ValidationException {
-//    if (!messages.isList(field)) {
-//      throw new ValidationException(
-//          ValidationException.getErrorMessage(ConfigTypeEnum.MESSAGES, FieldTypeEnum.STRINGLIST,
-//              field));
-//    }
-//    validatePlayerField(messages, field);
-//    validateTierField(messages, field);
-//    validateAmountField(messages, field);
-//    validateTimeField(messages, field);
-//    validateLocField(messages, field);
-//  }
-//
-//  @Override
-//  public void validateStringField(FileConfiguration messages, String field)
-//      throws ValidationException {
-//    if (!messages.isString(field)) {
-//      throw new ValidationException(
-//          ValidationException.getErrorMessage(ConfigTypeEnum.MESSAGES, FieldTypeEnum.STRING,
-//              field));
-//    }
-//    validatePlayerField(messages, field);
-//    validateTierField(messages, field);
-//    validateAmountField(messages, field);
-//    validateTimeField(messages, field);
-//    validateLocField(messages, field);
-//  }
 
   private void validatePlayerField(FileConfiguration messages, String field)
       throws ValidationException {

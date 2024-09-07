@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import me.yukun.spaceflares.SpaceFlares;
 import me.yukun.spaceflares.config.FlareConfig;
-import me.yukun.spaceflares.flare.FlareFireworkListener;
+import me.yukun.spaceflares.flare.events.FlareFireworkListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;

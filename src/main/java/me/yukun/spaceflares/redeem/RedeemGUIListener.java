@@ -1,4 +1,4 @@
-package me.yukun.spaceflares.gui.handler;
+package me.yukun.spaceflares.redeem;
 
 import static me.yukun.spaceflares.util.InventoryHandler.tryAddItems;
 
@@ -6,7 +6,6 @@ import java.util.Set;
 import me.yukun.spaceflares.config.FlareConfig;
 import me.yukun.spaceflares.config.Messages;
 import me.yukun.spaceflares.config.Redeems;
-import me.yukun.spaceflares.gui.RedeemGUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -78,7 +77,7 @@ public class RedeemGUIListener implements Listener {
   @EventHandler
   private void blockShiftClickEvent(InventoryClickEvent e) {
     // If player is trying to shift click items into GUI, cancel
-    Inventory other = e.getWhoClicked().getOpenInventory().getTopInventory();
+    Inventory other = e.getView().getTopInventory();
     if (RedeemGUI.getClickedRedeemGUI(other) == null || !e.getClick().isShiftClick()) {
       return;
     }

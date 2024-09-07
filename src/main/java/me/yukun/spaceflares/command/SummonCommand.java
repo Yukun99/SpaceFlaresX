@@ -1,7 +1,7 @@
 package me.yukun.spaceflares.command;
 
 import me.yukun.spaceflares.config.FlareConfig;
-import me.yukun.spaceflares.flare.FlareUseListener;
+import me.yukun.spaceflares.flare.Flare;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -9,21 +9,21 @@ import org.bukkit.entity.Player;
 
 public class SummonCommand extends SpaceFlaresCommand {
 
-  private final Player player;
   private final String flare;
+  private final Player player;
   private final Location location;
 
-  private SummonCommand(CommandSender sender, Player player, String flare, int x, int y, int z) {
+  private SummonCommand(CommandSender sender, String flare, Player player, int x, int y, int z) {
     super(sender);
-    this.player = player;
     this.flare = flare;
+    this.player = player;
     World world = player.getWorld();
     this.location = new Location(world, x, y, z);
   }
 
   @Override
   public boolean execute() {
-    FlareUseListener.summonFlare(player, flare, location);
+    new Flare(flare, player, location);
     return true;
   }
 
@@ -41,7 +41,7 @@ public class SummonCommand extends SpaceFlaresCommand {
     int x = getCoord(args[2], player, CoordType.X);
     int y = getCoord(args[3], player, CoordType.Y);
     int z = getCoord(args[4], player, CoordType.Z);
-    return new SummonCommand(sender, player, flare, x, y, z);
+    return new SummonCommand(sender, flare, player, x, y, z);
   }
 
   @SuppressWarnings("BooleanMethodIsAlwaysInverted")
