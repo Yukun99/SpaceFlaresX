@@ -47,6 +47,7 @@ public class Messages {
   private static final String HELP_FLARE_SUMMON3 = "/spaceflares summon (flare) ~x ~y ~z: Summons flare of specified tier at own coordinates with offsets.";
   private static final String HELP_FLARE_SUMMON4 = "  - Any of the above coordinate formats can be mixed, including negative numbers.";
   private static final String HELP_FLARE_SUMMON5 = "  - Example: '/spaceflares summon Example 1 ~ ~-24' is a valid command.";
+  private static final String HELP_ENVOY_LIST = "/envoy list: Sends list of all envoys.";
   private static final String HELP_ENVOY_START = "/envoy start (envoy): Starts envoy of specified tier.";
   private static final String HELP_ENVOY_STOP = "/envoy stop (envoy): Stops envoy of specified tier.";
   private static final String HELP_ENVOY_EDIT = "/envoy edit (envoy): Toggles edit mode for envoy of specified tier.";
@@ -58,9 +59,9 @@ public class Messages {
   private static final String HELP_REDEEM_P = "spaceflares.redeem: Ability to use /%cmd% redeem command.";
   private static final String HELP_GIVE_P = "spaceflares.give: Ability to use /%cmd% give command.";
   private static final String HELP_SUMMON_P = "spaceflares.summon: Ability to use /spaceflares summon command.";
+  private static final String HELP_LIST_P = "spaceflares.list: Ability to use /envoy list command.";
   private static final String HELP_START_P = "spaceflares.start: Ability to use /envoy start command.";
   private static final String HELP_STOP_P = "spaceflares.stop: Ability to use /envoy stop command.";
-  private static final String HELP_LIST_P = "spaceflares.list: Ability to use /envoy list command.";
   private static final String HELP_QUERY_P = "spaceflares.query: Ability to use /envoy query commands.";
   private static final String HELP_EDIT_P = "spaceflares.edit: Ability to use /envoy edit commands.";
   private static final String HELP_RELOAD_P = "spaceflares.reload: Ability to use reload command.";
@@ -335,15 +336,20 @@ public class Messages {
         sender.sendMessage(applyColor(HELP_FLARE_SUMMON5));
       }
     }
-    if (!isFlareCommand && CommandManager.hasCommandPermissions(sender, CommandTypeEnum.START)) {
-      sender.sendMessage(applyColor(HELP_ENVOY_START));
-    }
-    if (!isFlareCommand && CommandManager.hasCommandPermissions(sender, CommandTypeEnum.STOP)) {
-      sender.sendMessage(applyColor(HELP_ENVOY_STOP));
-    }
-    if (!isFlareCommand && sender instanceof Player &&
-        CommandManager.hasCommandPermissions(sender, CommandTypeEnum.EDIT)) {
-      sender.sendMessage(applyColor(HELP_ENVOY_EDIT));
+    if (!isFlareCommand) {
+      if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.LIST)) {
+        sender.sendMessage(applyColor(HELP_ENVOY_LIST));
+      }
+      if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.START)) {
+        sender.sendMessage(applyColor(HELP_ENVOY_START));
+      }
+      if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.STOP)) {
+        sender.sendMessage(applyColor(HELP_ENVOY_STOP));
+      }
+      if (sender instanceof Player &&
+          CommandManager.hasCommandPermissions(sender, CommandTypeEnum.EDIT)) {
+        sender.sendMessage(applyColor(HELP_ENVOY_EDIT));
+      }
     }
     if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.RELOAD)) {
       sender.sendMessage(applyColor(HELP_RELOAD));
@@ -358,10 +364,10 @@ public class Messages {
       if (isFlareCommand) {
         sender.sendMessage(applyColor(HELP_SUMMON_P));
       } else {
+        sender.sendMessage(applyColor(HELP_LIST_P));
         sender.sendMessage(applyColor(HELP_START_P));
         sender.sendMessage(applyColor(HELP_STOP_P));
         sender.sendMessage(applyColor(HELP_EDIT_P));
-        sender.sendMessage(applyColor(HELP_LIST_P));
         sender.sendMessage(applyColor(HELP_QUERY_P));
       }
       sender.sendMessage(applyColor(HELP_RELOAD_P));
