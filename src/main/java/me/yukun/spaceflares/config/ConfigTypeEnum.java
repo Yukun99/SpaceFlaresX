@@ -5,7 +5,8 @@ public enum ConfigTypeEnum {
   MESSAGES("Messages.yml"),
   REDEEMS("Redeems.yml"),
   FLARES("Flare config files"),
-  CRATES("Crate config files");
+  CRATES("Crate config files"),
+  ENVOYS("Envoy config files");
 
   private final String filename;
 

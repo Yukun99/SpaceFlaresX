@@ -1,6 +1,7 @@
 package me.yukun.spaceflares.util;
 
 import java.util.Collection;
+import me.yukun.spaceflares.config.EnvoyConfig;
 import me.yukun.spaceflares.config.FlareConfig;
 import me.yukun.spaceflares.config.Messages;
 import me.yukun.spaceflares.config.Redeems;
@@ -8,6 +9,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryHandler {
+
+  public static ItemStack giveEnvoyFlare(Player player, String type, int amount) {
+    ItemStack given = EnvoyConfig.getEnvoyFlareItem(type).clone();
+    given.setAmount(amount);
+    ItemStack remainItem = tryAddItems(player, given);
+    Messages.sendEnvoyReceive(player, type, given.getAmount());
+    if (remainItem != null) {
+      int remain = remainItem.getAmount();
+      Redeems.addEnvoyFlareRedeems(player, type, remain);
+      Messages.sendEnvoyReceiveFull(player, remain);
+    }
+    return remainItem;
+  }
 
   /**
    * Tries to give flares of specified tier and amount to specified player.
@@ -24,7 +38,7 @@ public class InventoryHandler {
     Messages.sendReceive(player, type, given.getAmount());
     if (remainItem != null) {
       int remain = remainItem.getAmount();
-      Redeems.addRedeems(player, type, remain);
+      Redeems.addFlareRedeems(player, type, remain);
       Messages.sendReceiveFull(player, remain);
     }
     return remainItem;

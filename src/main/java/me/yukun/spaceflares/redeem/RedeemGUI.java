@@ -1,5 +1,6 @@
 package me.yukun.spaceflares.redeem;
 
+import static me.yukun.spaceflares.util.InventoryHandler.tryAddItems;
 import static me.yukun.spaceflares.util.TextFormatter.applyColor;
 
 import java.util.ArrayList;
@@ -7,7 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import me.yukun.spaceflares.config.Config;
+import me.yukun.spaceflares.config.EnvoyConfig;
 import me.yukun.spaceflares.config.FlareConfig;
+import me.yukun.spaceflares.config.Messages;
 import me.yukun.spaceflares.config.Redeems;
 import me.yukun.spaceflares.util.Pair;
 import org.bukkit.Bukkit;
@@ -22,20 +25,22 @@ public class RedeemGUI {
   private static final Map<Inventory, RedeemGUI> guis = new HashMap<>();
 
   private final Player player;
+  private final boolean isFlare;
   private final Inventory gui;
   private List<Pair<String, Integer>> redeems;
   private int page;
   private int last_page;
 
-  public RedeemGUI(Player player) {
-    // log player
+  public RedeemGUI(Player player, boolean isFlare) {
+    // save fields
     this.player = player;
+    this.isFlare = isFlare;
 
     // create inventory and contents
     int size = Config.getRedeemSize();
     String name = applyColor(Config.getRedeemName());
     this.gui = Bukkit.createInventory(player, size, name);
-    this.redeems = convertRedeems(player);
+    this.redeems = convertRedeems();
 
     // create page trackers
     last_page = !redeems.isEmpty() ? redeems.size() / size + 1 : 0;
@@ -58,7 +63,7 @@ public class RedeemGUI {
   /**
    * Closes GUIs and unsaves them on plugin reload.
    */
-  public static void onReload() {
+  public static void reload() {
     clearAllRedeemGUIs();
   }
 
@@ -96,10 +101,11 @@ public class RedeemGUI {
     int begin = (size - 2) * (page - 1);
     int end = Math.min(redeems.size(), begin + size - 2);
     for (Pair<String, Integer> redeem : redeems.subList(begin, end)) {
-      String flare = redeem.key();
-      ItemStack flareItem = FlareConfig.getFlareItem(flare);
-      flareItem.setAmount(redeem.value());
-      items.add(flareItem);
+      String type = redeem.key();
+      ItemStack redeemItem =
+          isFlare ? FlareConfig.getFlareItem(type) : EnvoyConfig.getEnvoyFlareItem(type);
+      redeemItem.setAmount(redeem.value());
+      items.add(redeemItem);
     }
     return items.toArray(result);
   }
@@ -117,20 +123,21 @@ public class RedeemGUI {
     return Config.getRedeemSize() - 1;
   }
 
-  public void reconvertRedeems(Player player) {
-    redeems = convertRedeems(player);
+  public void reconvertRedeems() {
+    redeems = convertRedeems();
     int size = Config.getRedeemSize();
     last_page = !redeems.isEmpty() ? redeems.size() / size + 1 : 0;
   }
 
-  private List<Pair<String, Integer>> convertRedeems(Player player) {
+  private List<Pair<String, Integer>> convertRedeems() {
     List<Pair<String, Integer>> redeems = new ArrayList<>();
-    Map<String, Integer> configRedeems = Redeems.getRedeems(player);
-    for (String flare : configRedeems.keySet()) {
-      int amount = configRedeems.get(flare);
+    Map<String, Integer> configRedeems =
+        isFlare ? Redeems.getFlareRedeems(player) : Redeems.getEnvoyFlareRedeems(player);
+    for (String type : configRedeems.keySet()) {
+      int amount = configRedeems.get(type);
       while (amount > 0) {
         int saved = Math.min(amount, 64);
-        Pair<String, Integer> redeem = new Pair<>(flare, amount);
+        Pair<String, Integer> redeem = new Pair<>(type, amount);
         redeems.add(redeem);
         amount -= saved;
       }
@@ -171,5 +178,34 @@ public class RedeemGUI {
 
   public static RedeemGUI getClickedRedeemGUI(Inventory inventory) {
     return guis.get(inventory);
+  }
+
+  public void redeemFlare(ItemStack given) {
+    ItemStack remain = tryAddItems(player, given);
+    String type;
+    if (isFlare) {
+      type = FlareConfig.getFlareFromItem(given);
+    } else {
+      type = EnvoyConfig.getEnvoyFlareFromItem(given);
+    }
+    if (isFlare) {
+      Messages.sendRedeem(player, type, given.getAmount());
+    } else {
+      Messages.sendEnvoyRedeem(player, type, given.getAmount());
+    }
+    if (remain != null) {
+      Messages.sendRedeemFull(player);
+    }
+    removeRedeemedFlares(type, given, remain);
+  }
+
+  private void removeRedeemedFlares(String type, ItemStack given, ItemStack remain) {
+    int reduceAmount =
+        remain == null ? given.getAmount() : given.getAmount() - remain.getAmount();
+    if (isFlare) {
+      Redeems.removeFlareRedeems(player, type, reduceAmount);
+    } else {
+      Redeems.removeEnvoyFlareRedeems(player, type, reduceAmount);
+    }
   }
 }

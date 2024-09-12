@@ -25,6 +25,8 @@ public interface IValidator {
       case FIREWORK -> validateFireworkField(config, field);
       case COLOR -> validateColorField(config, field);
       case REGION -> validateRegionField(config, field);
+      case WORLD -> validateWorldField(config, field);
+      case CRATE -> validateCrateField(config, field);
       default -> {
       }
     }
@@ -136,5 +138,29 @@ public interface IValidator {
   default void validateRegionField(FileConfiguration config, String field)
       throws ValidationException {
     throw new ValidationException("No region field!");
+  }
+
+  /**
+   * Validates a fiend with fieldType World.
+   *
+   * @param config Configuration file that field is supposed to be in.
+   * @param field  Field to be evaluated.
+   * @throws ValidationException If field is missing, has wrong fieldType, or extra placeholders.
+   */
+  default void validateWorldField(FileConfiguration config, String field)
+      throws ValidationException {
+    throw new ValidationException("No world field!");
+  }
+
+  /**
+   * Validates a fiend with fieldType Crate.
+   *
+   * @param config Configuration file that field is supposed to be in.
+   * @param field  Field to be evaluated.
+   * @throws ValidationException If field is missing, has wrong fieldType, or extra placeholders.
+   */
+  default void validateCrateField(FileConfiguration config, String field)
+      throws ValidationException {
+    throw new ValidationException("No crate field!");
   }
 }

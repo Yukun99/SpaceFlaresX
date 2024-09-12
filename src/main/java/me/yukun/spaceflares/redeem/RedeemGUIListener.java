@@ -1,19 +1,12 @@
 package me.yukun.spaceflares.redeem;
 
-import static me.yukun.spaceflares.util.InventoryHandler.tryAddItems;
-
 import java.util.Set;
-import me.yukun.spaceflares.config.FlareConfig;
-import me.yukun.spaceflares.config.Messages;
-import me.yukun.spaceflares.config.Redeems;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 public class RedeemGUIListener implements Listener {
 
@@ -44,26 +37,10 @@ public class RedeemGUIListener implements Listener {
     if (e.getCurrentItem() == null) {
       return;
     }
-    Player player = (Player) e.getWhoClicked();
-    ItemStack given = e.getCurrentItem();
-    ItemStack remain = giveFlares(player, given);
-    int reduceAmount = remain == null ? given.getAmount() : given.getAmount() - remain.getAmount();
-    String flare = FlareConfig.getFlareFromItem(given);
-    Redeems.removeRedeems(player, flare, reduceAmount);
     RedeemGUI clicked = RedeemGUI.getClickedRedeemGUI(e.getClickedInventory());
-    clicked.reconvertRedeems(player);
+    clicked.redeemFlare(e.getCurrentItem());
+    clicked.reconvertRedeems();
     clicked.refreshGUI();
-  }
-
-  private ItemStack giveFlares(Player player, ItemStack flareItem) {
-    ItemStack given = flareItem.clone();
-    ItemStack remainItem = tryAddItems(player, given);
-    String flare = FlareConfig.getFlareFromItem(given);
-    Messages.sendRedeem(player, flare, given.getAmount());
-    if (remainItem != null) {
-      Messages.sendRedeemFull(player);
-    }
-    return remainItem;
   }
 
   @EventHandler

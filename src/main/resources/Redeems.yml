@@ -1,9 +1,14 @@
-# Format for a redeems entry is as below.  #
-# UUID refers to the player's UUID.        #
-# FlareName is the filename of flare owed. #
-# Amount is amount owed. (1 - infinity)    #
-############################################
-# UUID:                                    #
-#   FlareName: Amount                      #
-#   FlareName2: Amount                     #
-############################################
+# Format for a redeems entry is as below.        #
+# UUID refers to the player's UUID.              #
+# FlareName is the filename of flare owed.       #
+# EnvoyName is the filename of envoy flare owed. #
+# Amount is amount owed. (1 - infinity)          #
+##################################################
+# UUID:                                          #
+#   Flare:                                       #
+#     FlareName: Amount                          #
+#     FlareName2: Amount                         #
+#   Envoy:                                       #
+#     EnvoyName: Amount                          #
+#     EnvoyName2: Amount                         #
+##################################################

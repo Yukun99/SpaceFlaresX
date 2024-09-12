@@ -1,9 +1,20 @@
 # Placeholders:
-# %player% --> player who receives, summons or claims flare (Usable in Give, GiveFull, SummonAll, LandAll, ClaimAll)
-# %tier% --> tier name of summoned or landed flare (Usable in Give, Receive, Summon, SummonAll, Land, LandAll, Claim, ClaimAll, Despawn.Notify, DespawnAll, Redeem)
-# %amount% --> amount of flares given / sent to redeemable / redeemed (Usable in Give, GiveFull, Receive, ReceiveFull, Redeem)
+# %player% --> player who receives, summons or claims flare. Usable in:
+#    - Give, GiveFull, SummonAll, LandAll, ClaimAll, Envoy.Give, Envoy.GiveFull
+# %tier% --> tier name of summoned or landed flare. Usable in:
+#    - Give, Receive, Summon, SummonAll, Land, LandAll, Claim, ClaimAll, Despawn.Notify, DespawnAll, Redeem
+#    - Envoy.Summon, Envoy.Start, Envoy.Claim, Envoy.ClaimAll, Envoy.End, Envoy.Cooldown, Envoy.NoCooldown
+#    - Envoy.Give, Envoy.Receive, Envoy.Redeem, Envoy.Edit.Start, Envoy.Edit.Stop
+# %amount% --> amount of flares given / sent to redeemable / redeemed. Usable in:
+#    - Give, GiveFull, Receive, ReceiveFull, Redeem
+#    - Envoy.Give, Envoy.GiveFull, Envoy.Receive, Envoy.ReceiveFull, Envoy.Redeem
 # %time% --> time in seconds before flare lands or crate despawns (Usable in Land, LandAll)
-# %loc% --> location where flare appears or crate lands (Usable in Summon, SummonAll, Land, LandAll, Claim, ClaimAll, Despawn.Notify, DespawnAll)
+# %loc% --> location where flare appears or crate lands. Usable in:
+#    - Summon, SummonAll, Land, LandAll, Claim, ClaimAll, Despawn.Notify, DespawnAll, Envoy.ClaimAll, Envoy.Edit.NotAir
+# %remain% --> number of crates remaining in envoy. Usable in:
+#    - Envoy.Summon, Envoy.Start, Envoy.Claim, Envoy.ClaimAll, Envoy.Remain
+# %e_time% --> remaining or cooldown time. Usable in:
+#    - Envoy.Summon, Envoy.Start, Envoy.End, Envoy.Remain, Envoy.Cooldown
 
 #Prefix before all single lined messages.
 Prefix: "&bSpace&eFlares&f >> &7"
@@ -17,24 +28,30 @@ Placeholder:
   # Format for %player% placeholder. Usable placeholders: %username%, %displayname%
   # %username% is player's username, %displayname% is player's nickname, and maybe prefix/suffix
   Player: "%username%"
+  # Format for %e_time% placeholder. Usable placeholders: %day%, %hour%, %min%, %sec%
+  ETime: "%day% day(s), %hour% hr, %min% min, %sec% sec"
 
-####################
-# Command Messages #
-####################
+##########################
+# Flare Command Messages #
+##########################
 # Message sent when you give a player flares using the command.
-Give: "&aYou have given %player% %amount% %tier% flare(s)."
+Give: "&aYou have given %player%&a %amount%&a %tier%&a flare(s)."
 # Message sent when you give a player with a full inventory flares using the command.
-GiveFull: "&c%player%'s inventory is full! Sending %amount% flare(s) to redeemables."
+GiveFull: "&c%player%'s inventory is full! Sending %amount%&c flare(s) to redeemables."
 # Message sent to player when they are given flares using the command.
-Receive: "&aYou have received %amount% %tier% flare(s)."
+Receive: "&aYou have received %amount%&a %tier%&a flare(s)."
 # Message sent to player with a full inventory when they are given flares using the command.
-ReceiveFull: "&cYour inventory is full! Please use /spaceflares redeem to claim %amount% flare(s)."
+ReceiveFull: "&cYour inventory is full! Please use /spaceflares redeem to claim %amount%&c flare(s)."
+# Message sent when player redeems flares successfully.
+Redeem: "&aYou have redeemed %amount%&a %tier%&a flare(s)!"
+# Message sent when player redeems items with a full inventory.
+RedeemFull: "&cYour inventory is full! Please empty out slots before redeeming!"
 
 ##################
 # Flare Messages #
 ##################
 # Message sent if a player tries to summon a flare outside of specified regions.
-NoSummon: "&fYou may not summon a flare here! Please move to the &c&lWARZONE&f."
+NoSummon: "&cYou may not summon a flare here! Please move to the &c&lWARZONE&c."
 # Message sent to player who summons a flare.
 Summon:
   - "&f&l=============== &c&lALERT &f&l==============="
@@ -86,10 +103,79 @@ DespawnAll:
   - "&fThe %tier%&f crate at %loc%&f has despawned."
   - "&f&l====================================="
 
-###################
-# Redeem Messages #
-###################
-# Message sent when player redeems flares successfully.
-Redeem: "&aYou have redeemed %amount% %tier% flares!"
-# Message sent when player redeems flares with a full inventory.
-RedeemFull: "&cYour inventory is full! Please empty out slots before redeeming!"
+##################
+# Envoy Messages #
+##################
+Envoy:
+  # Message sent if player tries to summon an active envoy.
+  NoSummon: "&cThis envoy is still active! Please wait until it's over to summon."
+  # Message sent to player who summons an envoy.
+  Summon:
+    - "&f&l=============== &c&lALERT &f&l==============="
+    - "&aYou have summoned a %tier%&a envoy!"
+    - "&a%remain%&a flares appear in the sky..."
+    - "&aClaim the crates in %e_time%&a for rewards."
+    - "&f&l====================================="
+  # Message sent to all players when an envoy starts.
+  # This will not be sent to the player who summoned the envoy.
+  # For automatically started envoys, this will be sent to all players.
+  Start:
+    - "&f&l=============== &c&lALERT &f&l==============="
+    - "&aA %tier%&a envoy has been summoned!"
+    - "&a%remain%&a flares appear in the sky..."
+    - "&aClaim the crates in %e_time%&a for rewards."
+    - "&f&l====================================="
+  # Message sent when a player claims a crate in the envoy.
+  Claim: "&aYou have claimed a %tier%&a crate! %remain%&a crates remaining."
+  # Message sent to all players when a player claims a crate in the envoy.
+  # This will not be sent to the player who claimed the crate.
+  ClaimAll: "&f%player%&f has claimed a %tier%&f crate at %loc%&f! %remain%&f crates remaining."
+  # Message sent to all players when the envoy ends.
+  End: "&fThe %tier%&f envoy has ended! Please come back in %e_time%&f."
+
+  ##########################
+  # Envoy Command Messages #
+  ##########################
+  # Message sent when player uses /envoy query (tier) while the envoy is ongoing.
+  Remain: "&fThere are %remain% crates remaining. %e_time% before the envoy ends."
+  # Message sent when player uses /envoy query (tier) while the envoy is on cooldown.
+  Cooldown: "&fThe next %tier%&f envoy will be in %e_time%&f."
+  # Message sent when player uses /envoy query (tier) for unsummonable envoys.
+  NoCooldown: "&fThe %tier%&f envoy may only be summoned, no cooldown available."
+  # Message sent when player uses  /envoy query (tier) for an invalid envoy type.
+  NoExist: "&cThe envoy you're looking for doesn't exist! Please check /envoy list."
+  # Message sent as the first line when player runs /envoy list.
+  # The envoy names will be listed down as "- (envoy name)" in single lines.
+  # Use \n to add lines after this. By default the list will start on the next line.
+  List: "&fHere is a list of all envoys:\n"
+  # Message sent when you give a player envoy flares using the command.
+  Give: "&aYou have given %player%&a %amount%&a %tier%&a envoy flare(s)."
+  # Message sent when you give a player with a full inventory envoy flares using the command.
+  GiveFull: "&c%player%'s inventory is full! Sending %amount%&c envoy flare(s) to redeemables."
+  # Message sent to player when they are given envoy flares using the command.
+  Receive: "&aYou have received %amount%&a %tier%&a envoy flare(s)."
+  # Message sent to player with a full inventory when they are given envoy flares using the command.
+  ReceiveFull: "&cYour inventory is full! Please use /spaceflares redeem to claim %amount%&c envoy flare(s)."
+  # Message sent when player redeems envoy flares successfully.
+  Redeem: "&aYou have redeemed %amount%&a %tier%&a envoy flare(s)!"
+
+  ###############################
+  # Envoy Edit Command Messages #
+  ###############################
+  Edit:
+    # Message sent when player tries to edit multiple envoys at once.
+    Editing: "&cYou are editing another envoy! Please quit edit mode for that envoy first."
+    # Message sent when player enters envoy editing mode.
+    Start: "&aYou are now editing %tier%&a envoy."
+    # Message sent when player exits envoy editing mode.
+    Stop: "&aYou have stopped editing %tier%&a envoy."
+    # Message sent when player successfully adds a location to the envoy.
+    Save: "&aSuccess! You have added a new location to the envoy!"
+    # Message sent when player tries to add a location that isn't an air block to the envoy.
+    NotAir: "&cError! The location could not be saved. Please check if the block at %loc%&c is an air block."
+    # Message sent when added envoy location could not be saved.
+    NoSave: "&cError! The location could not be saved. Please try again or contact plugin author."
+    # Message sent when player successfully removes a location from the envoy.
+    Delete: "&aSuccess! You have removed a location from the envoy."
+    # Message sent when player tries to use /envoy stop on an envoy that isn't ongoing.
+    NoEnd: "&cThe envoy is already stopped!"

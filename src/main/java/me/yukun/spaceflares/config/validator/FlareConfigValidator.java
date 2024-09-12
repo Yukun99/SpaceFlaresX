@@ -70,6 +70,7 @@ public class FlareConfigValidator implements IValidator {
     }
   }
 
+  @Override
   public void validateStringField(FileConfiguration config, String field)
       throws ValidationException {
     if (!config.isString(field)) {
@@ -83,8 +84,7 @@ public class FlareConfigValidator implements IValidator {
     if (Objects.requireNonNull(config.getString(field)).contains(placeholder)) {
       throw new ValidationException(
           ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.FLARES,
-              FieldTypeEnum.STRING,
-              field, placeholder));
+              FieldTypeEnum.STRING, field, placeholder));
     }
   }
 
@@ -125,8 +125,7 @@ public class FlareConfigValidator implements IValidator {
       if (line.contains(placeholder)) {
         throw new ValidationException(
             ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.FLARES,
-                FieldTypeEnum.STRINGLIST,
-                field, placeholder));
+                FieldTypeEnum.STRINGLIST, field, placeholder));
       }
     }
   }

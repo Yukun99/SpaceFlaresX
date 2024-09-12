@@ -10,7 +10,9 @@ public enum FieldTypeEnum {
   REWARD("Reward type"),
   FIREWORK("Firework type"),
   COLOR("Color values"),
-  REGION("WorldGuard regions");
+  REGION("WorldGuard regions"),
+  WORLD("World name"),
+  CRATE("Crate type");
 
   private final String name;
 

@@ -3,55 +3,14 @@ package me.yukun.spaceflares.command;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
-import me.yukun.spaceflares.config.Messages;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import me.yukun.spaceflares.command.envoy.EnvoyListCommand;
+import me.yukun.spaceflares.util.Pair;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.jetbrains.annotations.NotNull;
 
-public class CommandManager implements CommandExecutor {
+public class CommandManager {
 
-  @Override
-  public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command,
-      @NotNull String label, @NotNull String[] args) {
-    SpaceFlaresCommand captchaCommand = new HelpCommand(sender);
-    boolean hasPermission = false;
-    switch (args.length) {
-      case 1 -> {
-        if (args[0].equals("reload")) {
-          hasPermission = hasCommandPermissions(sender, CommandTypeEnum.RELOAD);
-          captchaCommand = new ReloadCommand(sender);
-        }
-        if (args[0].equals("redeem")) {
-          hasPermission = hasCommandPermissions(sender, CommandTypeEnum.REDEEM);
-          captchaCommand = RedeemCommand.parseRedeemCommand(sender);
-        }
-      }
-      case 2, 3, 4 -> {
-        if (args[0].equals("give")) {
-          hasPermission = hasCommandPermissions(sender, CommandTypeEnum.GIVE);
-          captchaCommand = GiveCommand.parseGiveCommand(sender, args);
-        }
-      }
-      case 5 -> {
-        if (args[0].equals("summon")) {
-          hasPermission = hasCommandPermissions(sender, CommandTypeEnum.SUMMON);
-          captchaCommand = SummonCommand.parseSummonCommand(sender, args);
-        }
-      }
-    }
-    if (captchaCommand instanceof HelpCommand) {
-      hasPermission = hasCommandPermissions(sender, CommandTypeEnum.HELP);
-    }
-    if (!hasPermission) {
-      Messages.sendNoPermission(sender);
-      return false;
-    }
-    return captchaCommand.execute();
-  }
-
-  private static final Map<CommandTypeEnum, BiFunction<CommandSender, CommandTypeEnum, Boolean>> commandPermissorMap = new HashMap<>() {{
+  protected static final Map<CommandTypeEnum, BiFunction<CommandSender, CommandTypeEnum, Boolean>> commandPermissorMap = new HashMap<>() {{
     put(CommandTypeEnum.GIVE, (sender, command) -> {
       if (hasAdminPermissions(sender)) {
         return true;
@@ -82,6 +41,36 @@ public class CommandManager implements CommandExecutor {
       }
       return sender.hasPermission("spaceflares.summon");
     });
+    put(CommandTypeEnum.LIST, (sender, command) -> {
+      if (hasAdminPermissions(sender)) {
+        return true;
+      }
+      return sender.hasPermission("spaceflares.list");
+    });
+    put(CommandTypeEnum.QUERY, (sender, command) -> {
+      if (hasAdminPermissions(sender)) {
+        return true;
+      }
+      return sender.hasPermission("spaceflares.query");
+    });
+    put(CommandTypeEnum.EDIT, (sender, command) -> {
+      if (hasAdminPermissions(sender)) {
+        return true;
+      }
+      return sender.hasPermission("spaceflares.edit");
+    });
+    put(CommandTypeEnum.START, (sender, command) -> {
+      if (hasAdminPermissions(sender)) {
+        return true;
+      }
+      return sender.hasPermission("spaceflares.start");
+    });
+    put(CommandTypeEnum.STOP, (sender, command) -> {
+      if (hasAdminPermissions(sender)) {
+        return true;
+      }
+      return sender.hasPermission("spaceflares.stop");
+    });
   }};
 
   @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -94,5 +83,24 @@ public class CommandManager implements CommandExecutor {
 
   public static boolean hasAdminPermissions(CommandSender sender) {
     return sender.hasPermission("spaceflares.*") || sender.hasPermission("spaceflares.admin");
+  }
+
+  protected static Pair<AbstractCommand, Boolean> parseSimpleCommand(CommandSender sender,
+      String name, boolean isFlareCommand) {
+    AbstractCommand command = new HelpCommand(sender, isFlareCommand);
+    boolean hasPermission = false;
+    if (name.equals("reload")) {
+      hasPermission = hasCommandPermissions(sender, CommandTypeEnum.RELOAD);
+      command = new ReloadCommand(sender);
+    }
+    if (name.equals("redeem")) {
+      hasPermission = hasCommandPermissions(sender, CommandTypeEnum.REDEEM);
+      command = RedeemCommand.parseRedeemCommand(sender, isFlareCommand);
+    }
+    if (name.equals("list")) {
+      hasPermission = hasCommandPermissions(sender, CommandTypeEnum.LIST);
+      command = new EnvoyListCommand(sender);
+    }
+    return new Pair<>(command, hasPermission);
   }
 }

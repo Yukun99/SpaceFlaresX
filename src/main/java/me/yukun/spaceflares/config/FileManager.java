@@ -54,6 +54,7 @@ public class FileManager {
     });
     put(ConfigTypeEnum.FLARES, configType -> FlareConfig.validate());
     put(ConfigTypeEnum.CRATES, configType -> CrateConfig.validate());
+    put(ConfigTypeEnum.ENVOYS, configType -> EnvoyConfig.validate());
   }};
   // Why have setup step? Validate before loading info so that we *don't* get YAML parsing errors.
   private final Map<ConfigTypeEnum, Consumer<ConfigTypeEnum>> setupConfigMap = new HashMap<>() {{
@@ -76,6 +77,10 @@ public class FileManager {
     put(ConfigTypeEnum.CRATES, configType -> {
       validateConfigMap.get(configType).accept(configType);
       CrateConfig.setup();
+    });
+    put(ConfigTypeEnum.ENVOYS, configType -> {
+      validateConfigMap.get(configType).accept(configType);
+      EnvoyConfig.setup();
     });
   }};
 
@@ -113,6 +118,11 @@ public class FileManager {
       setupConfigMap.get(configType).accept(configType);
       Messages.printReloaded(configType);
     });
+    put(ConfigTypeEnum.ENVOYS, configType -> {
+      EnvoyConfig.reload();
+      setupConfigMap.get(configType).accept(configType);
+      Messages.printReloaded(configType);
+    });
   }};
 
   /**
@@ -138,6 +148,7 @@ public class FileManager {
 
     loadFlareFolder(plugin);
     loadCrateFolder(plugin);
+    loadEnvoyFolder(plugin);
   }
 
   /**
@@ -273,6 +284,46 @@ public class FileManager {
     File crateFile = createFile("crates/" + name + ".yml");
     FileConfiguration crateConfig = YamlConfiguration.loadConfiguration(crateFile);
     new CrateConfig(name, crateConfig, crateFile);
+  }
+
+  /**
+   * Creates envoy config folder and files if they don't exist.
+   *
+   * @param plugin Plugin to create envoy folder and files for.
+   * @throws IOException If envoy config files cannot be loaded properly.
+   */
+  private void loadEnvoyFolder(Plugin plugin) throws IOException {
+    File file = new File(plugin.getDataFolder(), "/envoys");
+    if (file.mkdirs()) {
+      Messages.printFolderNotExists("Envoys folder");
+    } else {
+      Messages.printFolderExists("Envoys folder");
+    }
+    String[] currentFiles = file.list();
+    assert currentFiles != null;
+    if (currentFiles.length == 0) {
+      loadEnvoyConfig("Example");
+      return;
+    }
+    for (String filename : currentFiles) {
+      if (!filename.endsWith(".yml")) {
+        continue;
+      }
+      String name = filename.substring(0, filename.length() - 4);
+      loadEnvoyConfig(name);
+    }
+  }
+
+  /**
+   * Loads envoy config file. Copies default envoy config file from plugin if it doesn't exist.
+   *
+   * @param name Name of envoy config file to create/copy.
+   * @throws IOException If envoy config file cannot be loaded properly.
+   */
+  private void loadEnvoyConfig(String name) throws IOException {
+    File envoyFile = createFile("envoys/" + name + ".yml");
+    FileConfiguration envoyConfig = YamlConfiguration.loadConfiguration(envoyFile);
+    new EnvoyConfig(name, envoyConfig, envoyFile);
   }
 
   /**

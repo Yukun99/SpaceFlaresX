@@ -32,21 +32,21 @@ import org.bukkit.inventory.ItemStack;
 
 public class Flare {
 
-  private final String type;
+  protected final String type;
   private final Player player;
 
-  private static final Map<FallingBlock, Flare> fallingBlockMap = new HashMap<>();
-  private FallingBlock fallingBlock = null;
+  protected static final Map<FallingBlock, Flare> fallingBlockMap = new HashMap<>();
+  protected FallingBlock fallingBlock = null;
 
-  private static final Map<Block, Flare> blockMap = new HashMap<>();
-  private Block block = null;
+  protected static final Map<Block, Flare> blockMap = new HashMap<>();
+  protected Block block = null;
 
-  private static final Map<Inventory, Flare> guiMap = new HashMap<>();
-  private Inventory itemRewards;
-  private List<String> cmdRewards = new ArrayList<>();
+  protected static final Map<Inventory, Flare> guiMap = new HashMap<>();
+  protected Inventory itemRewards;
+  protected List<String> cmdRewards = new ArrayList<>();
 
-  private int fireworkTimer;
-  private int despawnTimer;
+  protected int fireworkTimer;
+  protected int despawnTimer;
 
   /**
    * Constructor for a Flare instance.
@@ -76,19 +76,25 @@ public class Flare {
     summonFlare(location);
   }
 
+  protected Flare(String type, Location location) {
+    this.type = type;
+    this.player = null;
+    summonFlare(location);
+  }
+
   /**
-   * Clears all falling flares and refunds flare items on plugin disable. Clears all landed crates
-   * and drops items on plugin disable.
+   * Clears all falling flares and refunds flare items on plugin disable.
+   * <p>Clears all landed crates and drops items on plugin disable.</p>
    */
   public static void onDisable() {
     clearAllFlares();
   }
 
   /**
-   * Clears all falling flares and refunds flare items on plugin reload.\ Clears all landed crates
-   * and drops items on plugin disable.
+   * Clears all falling flares and refunds flare items on plugin reload.
+   * <p>Clears all landed crates and drops items on plugin disable.</p>
    */
-  public static void onReload() {
+  public static void reload() {
     clearAllFlares();
   }
 
@@ -151,7 +157,7 @@ public class Flare {
    *
    * @param location Location to summon flare at.
    */
-  private void summonFlare(Location location) {
+  protected void summonFlare(Location location) {
     BlockData flareBlockData = CrateConfig.getCrateBlock(type);
     FallingBlock flareBlock = Objects.requireNonNull(location.getWorld())
         .spawnFallingBlock(location, flareBlockData);
@@ -190,7 +196,7 @@ public class Flare {
   /**
    * Sets rewards for landed crate.
    */
-  private void setRewards() {
+  protected void setRewards() {
     int size = Config.getRedeemSize();
     String name = applyColor(Config.getRedeemName());
     this.itemRewards = Bukkit.createInventory(player, size, name);
@@ -251,7 +257,7 @@ public class Flare {
    *
    * @param player Player to open crate for.
    */
-  private void openCrate(Player player) {
+  protected void openCrate(Player player) {
     giveCommandRewards(player);
     player.openInventory(itemRewards);
 
@@ -265,7 +271,7 @@ public class Flare {
    *
    * @param player Player to fast open crate for.
    */
-  private void fastOpenCrate(Player player) {
+  protected void fastOpenCrate(Player player) {
     giveCommandRewards(player);
     if (CrateConfig.getCrateDoFastDrop(type)) {
       dropItemRewards();
@@ -283,7 +289,7 @@ public class Flare {
    * <p>1. Give rewards if enabled.</p>
    * <p>2. Gracefully remove crate from world.</p>
    */
-  private void despawnCrate() {
+  protected void despawnCrate() {
     if (CrateConfig.getCrateDoDespawnGive(type)) {
       giveCommandRewards(player);
       giveItemRewards(player);
@@ -297,7 +303,7 @@ public class Flare {
    *
    * @param player Player to give command rewards to.
    */
-  private void giveCommandRewards(Player player) {
+  protected void giveCommandRewards(Player player) {
     if (cmdRewards.isEmpty()) {
       return;
     }
@@ -313,7 +319,7 @@ public class Flare {
    *
    * @param player Player to give item rewards to.
    */
-  private void giveItemRewards(Player player) {
+  protected void giveItemRewards(Player player) {
     if (itemRewards.isEmpty()) {
       return;
     }
@@ -333,7 +339,7 @@ public class Flare {
   /**
    * Drops item rewards on ground.
    */
-  private void dropItemRewards() {
+  protected void dropItemRewards() {
     if (itemRewards.isEmpty()) {
       return;
     }
@@ -354,6 +360,11 @@ public class Flare {
    * <p>4. Deregister crate block.</p>
    */
   public void endCrate() {
+    clearCrate();
+    blockMap.remove(block);
+  }
+
+  public void clearCrate() {
     Bukkit.getScheduler().cancelTask(despawnTimer);
 
     guiMap.remove(itemRewards);
@@ -367,13 +378,12 @@ public class Flare {
     Messages.sendDespawnAll(player, type, block.getLocation());
 
     block.setType(Material.AIR);
-    blockMap.remove(block);
   }
 
   /**
    * Starts firework spawning for falling flare.
    */
-  private void startFireworks() {
+  protected void startFireworks() {
     fireworkTimer = Bukkit.getScheduler().scheduleSyncRepeatingTask(SpaceFlares.getPlugin(), () -> {
       Location loc = fallingBlock.getLocation();
       Firework firework = Fireworks.spawnFirework(loc, type);
@@ -384,7 +394,7 @@ public class Flare {
   /**
    * Stops firework spawning for fallen crate.
    */
-  private void stopFireworks() {
+  protected void stopFireworks() {
     Bukkit.getScheduler().cancelTask(fireworkTimer);
   }
 
@@ -403,7 +413,7 @@ public class Flare {
   /**
    * Stops despawn timer for claimed or despawn crate.
    */
-  private void stopDespawnTimer() {
+  protected void stopDespawnTimer() {
     Bukkit.getScheduler().cancelTask(despawnTimer);
   }
 
@@ -418,7 +428,10 @@ public class Flare {
 
     for (Flare flare : blockMap.values()) {
       flare.stopDespawnTimer();
-      flare.endCrate();
+      if (flare.player != null) {
+        flare.fastOpenCrate(flare.player);
+      }
+      flare.clearCrate();
     }
     blockMap.clear();
   }
@@ -426,12 +439,12 @@ public class Flare {
   /**
    * Ends flare and refunds flare item to summoner.
    */
-  private void endFlare() {
+  protected void endFlare() {
     if (fallingBlock == null) {
       return;
     }
 
-    this.fallingBlock.remove();
+    fallingBlock.remove();
     stopFireworks();
 
     InventoryHandler.giveFlare(player, type, 1);

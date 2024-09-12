@@ -28,6 +28,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class FlareConfig {
 
   private static final Map<String, FlareConfig> nameConfigMap = new HashMap<>();
+  private static final Random random = new Random();
   private static final NamespacedKey flareKey = new NamespacedKey(SpaceFlares.getPlugin(), "Flare");
 
   private final String name;
@@ -35,8 +36,6 @@ public class FlareConfig {
   private final File file;
   private ItemStack flareItem = null;
   private final List<Color> colors = new ArrayList<>();
-
-  private static final Random random = new Random();
 
   public FlareConfig(String name, FileConfiguration config, File file) {
     this.name = name;
@@ -202,7 +201,7 @@ public class FlareConfig {
   }
 
   private int getAnnounceRange() {
-    return config.getInt("Announce.Range");
+    return config.getInt("Announce.Radius");
   }
 
   private ItemStack getFlareItem() {

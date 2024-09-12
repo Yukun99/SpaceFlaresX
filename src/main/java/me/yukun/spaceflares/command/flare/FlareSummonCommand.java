@@ -1,5 +1,7 @@
-package me.yukun.spaceflares.command;
+package me.yukun.spaceflares.command.flare;
 
+import me.yukun.spaceflares.command.AbstractCommand;
+import me.yukun.spaceflares.command.HelpCommand;
 import me.yukun.spaceflares.config.FlareConfig;
 import me.yukun.spaceflares.flare.Flare;
 import org.bukkit.Location;
@@ -7,13 +9,14 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SummonCommand extends SpaceFlaresCommand {
+public class FlareSummonCommand extends AbstractCommand {
 
   private final String flare;
   private final Player player;
   private final Location location;
 
-  private SummonCommand(CommandSender sender, String flare, Player player, int x, int y, int z) {
+  private FlareSummonCommand(CommandSender sender, String flare, Player player, int x, int y,
+      int z) {
     super(sender);
     this.flare = flare;
     this.player = player;
@@ -27,21 +30,21 @@ public class SummonCommand extends SpaceFlaresCommand {
     return true;
   }
 
-  public static SpaceFlaresCommand parseSummonCommand(CommandSender sender, String[] args) {
+  public static AbstractCommand parseSummonCommand(CommandSender sender, String[] args) {
     if (!(sender instanceof Player player)) {
-      return new HelpCommand(sender);
+      return new HelpCommand(sender, true);
     }
     if (!FlareConfig.isFlare(args[1])) {
-      return new HelpCommand(sender);
+      return new HelpCommand(sender, true);
     }
     if (!isValidCoord(args[2]) || !isValidCoord(args[3]) || !isValidCoord(args[4])) {
-      return new HelpCommand(sender);
+      return new HelpCommand(sender, true);
     }
     String flare = args[1];
     int x = getCoord(args[2], player, CoordType.X);
     int y = getCoord(args[3], player, CoordType.Y);
     int z = getCoord(args[4], player, CoordType.Z);
-    return new SummonCommand(sender, flare, player, x, y, z);
+    return new FlareSummonCommand(sender, flare, player, x, y, z);
   }
 
   @SuppressWarnings("BooleanMethodIsAlwaysInverted")

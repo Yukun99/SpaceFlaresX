@@ -1,18 +1,23 @@
 package me.yukun.spaceflares;
 
 import java.util.Objects;
-import me.yukun.spaceflares.command.CommandManager;
+import me.yukun.spaceflares.command.envoy.EnvoyCommandManager;
+import me.yukun.spaceflares.command.flare.FlareCommandManager;
 import me.yukun.spaceflares.config.FileManager;
 import me.yukun.spaceflares.config.Messages;
-import me.yukun.spaceflares.flare.events.CrateClickListener;
+import me.yukun.spaceflares.envoy.Envoy;
+import me.yukun.spaceflares.envoy.EnvoyFlareUseListener;
+import me.yukun.spaceflares.envoy.edit.EnvoyEditListener;
+import me.yukun.spaceflares.envoy.edit.EnvoyEditor;
 import me.yukun.spaceflares.flare.Flare;
+import me.yukun.spaceflares.flare.events.CrateClickListener;
 import me.yukun.spaceflares.flare.events.FlareFireworkListener;
 import me.yukun.spaceflares.flare.events.FlareLandListener;
 import me.yukun.spaceflares.flare.events.FlareUseListener;
-import me.yukun.spaceflares.redeem.RedeemGUI;
-import me.yukun.spaceflares.redeem.RedeemGUIListener;
 import me.yukun.spaceflares.flare.events.RewardGUIListener;
 import me.yukun.spaceflares.integration.SupportManager;
+import me.yukun.spaceflares.redeem.RedeemGUI;
+import me.yukun.spaceflares.redeem.RedeemGUIListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -36,13 +41,16 @@ public class SpaceFlares extends JavaPlugin implements Listener {
       Bukkit.getPluginManager().disablePlugin(this);
       return;
     }
-    Objects.requireNonNull(getCommand("spaceflares")).setExecutor(new CommandManager());
+    Objects.requireNonNull(getCommand("spaceflares")).setExecutor(new FlareCommandManager());
+    Objects.requireNonNull(getCommand("envoy")).setExecutor(new EnvoyCommandManager());
     pm.registerEvents(new RedeemGUIListener(), this);
     pm.registerEvents(new FlareUseListener(), this);
     pm.registerEvents(new FlareFireworkListener(), this);
     pm.registerEvents(new FlareLandListener(), this);
     pm.registerEvents(new CrateClickListener(), this);
     pm.registerEvents(new RewardGUIListener(), this);
+    pm.registerEvents(new EnvoyFlareUseListener(), this);
+    pm.registerEvents(new EnvoyEditListener(), this);
   }
 
   public static Plugin getPlugin() {
@@ -57,6 +65,8 @@ public class SpaceFlares extends JavaPlugin implements Listener {
     FileManager.onDisable();
     RedeemGUI.onDisable();
     Flare.onDisable();
+    Envoy.onDisable();
+    EnvoyEditor.onDisable();
   }
 
   @EventHandler

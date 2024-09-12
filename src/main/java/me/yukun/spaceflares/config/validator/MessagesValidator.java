@@ -11,15 +11,18 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class MessagesValidator implements IValidator {
 
-  private final List<String> SECTIONS = new ArrayList<>(2) {{
+  private final List<String> SECTIONS = new ArrayList<>(4) {{
     add("Placeholder");
     add("Despawn");
+    add("Envoy");
+    add("Envoy.Edit");
   }};
 
-  private final Map<String, FieldTypeEnum> FIELDS = new HashMap<>(19) {{
+  private final Map<String, FieldTypeEnum> FIELDS = new HashMap<>(43) {{
     put("Prefix", FieldTypeEnum.STRING);
     put("Placeholder.Loc", FieldTypeEnum.STRING);
     put("Placeholder.Player", FieldTypeEnum.STRING);
+    put("Placeholder.ETime", FieldTypeEnum.STRING);
     put("Give", FieldTypeEnum.STRING);
     put("GiveFull", FieldTypeEnum.STRING);
     put("Receive", FieldTypeEnum.STRING);
@@ -36,17 +39,43 @@ public class MessagesValidator implements IValidator {
     put("DespawnAll", FieldTypeEnum.STRINGLIST);
     put("Redeem", FieldTypeEnum.STRING);
     put("RedeemFull", FieldTypeEnum.STRING);
+    put("Envoy.NoSummon", FieldTypeEnum.STRING);
+    put("Envoy.Summon", FieldTypeEnum.STRINGLIST);
+    put("Envoy.Start", FieldTypeEnum.STRINGLIST);
+    put("Envoy.Claim", FieldTypeEnum.STRING);
+    put("Envoy.ClaimAll", FieldTypeEnum.STRING);
+    put("Envoy.End", FieldTypeEnum.STRING);
+    put("Envoy.Remain", FieldTypeEnum.STRING);
+    put("Envoy.Cooldown", FieldTypeEnum.STRING);
+    put("Envoy.NoCooldown", FieldTypeEnum.STRING);
+    put("Envoy.NoExist", FieldTypeEnum.STRING);
+    put("Envoy.List", FieldTypeEnum.STRING);
+    put("Envoy.Give", FieldTypeEnum.STRING);
+    put("Envoy.GiveFull", FieldTypeEnum.STRING);
+    put("Envoy.Receive", FieldTypeEnum.STRING);
+    put("Envoy.ReceiveFull", FieldTypeEnum.STRING);
+    put("Envoy.Redeem", FieldTypeEnum.STRING);
+    put("Envoy.Edit.Editing", FieldTypeEnum.STRING);
+    put("Envoy.Edit.Start", FieldTypeEnum.STRING);
+    put("Envoy.Edit.Stop", FieldTypeEnum.STRING);
+    put("Envoy.Edit.Save", FieldTypeEnum.STRING);
+    put("Envoy.Edit.NoSave", FieldTypeEnum.STRING);
+    put("Envoy.Edit.Delete", FieldTypeEnum.STRING);
+    put("Envoy.Edit.NoEnd", FieldTypeEnum.STRING);
   }};
 
-  private final Map<String, FieldTypeEnum> PLAYER_PLACEHOLDER_FIELDS = new HashMap<>(5) {{
+  private final Map<String, FieldTypeEnum> PLAYER_PLACEHOLDER_FIELDS = new HashMap<>(8) {{
     put("Give", FieldTypeEnum.STRING);
     put("GiveFull", FieldTypeEnum.STRING);
     put("SummonAll", FieldTypeEnum.STRINGLIST);
     put("LandAll", FieldTypeEnum.STRINGLIST);
     put("ClaimAll", FieldTypeEnum.STRINGLIST);
+    put("Envoy.ClaimAll", FieldTypeEnum.STRING);
+    put("Envoy.Give", FieldTypeEnum.STRING);
+    put("Envoy.GiveFull", FieldTypeEnum.STRING);
   }};
 
-  private final Map<String, FieldTypeEnum> TIER_PLACEHOLDER_FIELDS = new HashMap<>(10) {{
+  private final Map<String, FieldTypeEnum> TIER_PLACEHOLDER_FIELDS = new HashMap<>(22) {{
     put("Give", FieldTypeEnum.STRING);
     put("Receive", FieldTypeEnum.STRING);
     put("Summon", FieldTypeEnum.STRINGLIST);
@@ -57,22 +86,39 @@ public class MessagesValidator implements IValidator {
     put("ClaimAll", FieldTypeEnum.STRINGLIST);
     put("Despawn.Notify", FieldTypeEnum.STRING);
     put("Redeem", FieldTypeEnum.STRING);
+    put("Envoy.Summon", FieldTypeEnum.STRINGLIST);
+    put("Envoy.Start", FieldTypeEnum.STRINGLIST);
+    put("Envoy.Claim", FieldTypeEnum.STRING);
+    put("Envoy.ClaimAll", FieldTypeEnum.STRING);
+    put("Envoy.End", FieldTypeEnum.STRING);
+    put("Envoy.Cooldown", FieldTypeEnum.STRING);
+    put("Envoy.NoCooldown", FieldTypeEnum.STRING);
+    put("Envoy.Give", FieldTypeEnum.STRING);
+    put("Envoy.Receive", FieldTypeEnum.STRING);
+    put("Envoy.Redeem", FieldTypeEnum.STRING);
+    put("Envoy.Edit.Start", FieldTypeEnum.STRING);
+    put("Envoy.Edit.Stop", FieldTypeEnum.STRING);
   }};
 
-  private final Map<String, FieldTypeEnum> AMOUNT_PLACEHOLDER_FIELDS = new HashMap<>(5) {{
+  private final Map<String, FieldTypeEnum> AMOUNT_PLACEHOLDER_FIELDS = new HashMap<>(10) {{
     put("Give", FieldTypeEnum.STRING);
     put("GiveFull", FieldTypeEnum.STRING);
     put("Receive", FieldTypeEnum.STRING);
     put("ReceiveFull", FieldTypeEnum.STRING);
     put("Redeem", FieldTypeEnum.STRING);
+    put("Envoy.Give", FieldTypeEnum.STRING);
+    put("Envoy.GiveFull", FieldTypeEnum.STRING);
+    put("Envoy.Receive", FieldTypeEnum.STRING);
+    put("Envoy.ReceiveFull", FieldTypeEnum.STRING);
+    put("Envoy.Redeem", FieldTypeEnum.STRING);
   }};
 
-  private final Map<String, FieldTypeEnum> TIME_PLACEHOLDER_FIELDS = new HashMap<>(4) {{
+  private final Map<String, FieldTypeEnum> TIME_PLACEHOLDER_FIELDS = new HashMap<>(2) {{
     put("Land", FieldTypeEnum.STRINGLIST);
     put("LandAll", FieldTypeEnum.STRINGLIST);
   }};
 
-  private final Map<String, FieldTypeEnum> LOC_PLACEHOLDER_FIELDS = new HashMap<>(8) {{
+  private final Map<String, FieldTypeEnum> LOC_PLACEHOLDER_FIELDS = new HashMap<>(9) {{
     put("Summon", FieldTypeEnum.STRINGLIST);
     put("SummonAll", FieldTypeEnum.STRINGLIST);
     put("Land", FieldTypeEnum.STRINGLIST);
@@ -81,6 +127,23 @@ public class MessagesValidator implements IValidator {
     put("ClaimAll", FieldTypeEnum.STRINGLIST);
     put("Despawn.Notify", FieldTypeEnum.STRING);
     put("DespawnAll", FieldTypeEnum.STRINGLIST);
+    put("Envoy.ClaimAll", FieldTypeEnum.STRING);
+  }};
+
+  private final Map<String, FieldTypeEnum> REMAIN_PLACEHOLDER_FIELDS = new HashMap<>(5) {{
+    put("Envoy.Summon", FieldTypeEnum.STRINGLIST);
+    put("Envoy.Start", FieldTypeEnum.STRINGLIST);
+    put("Envoy.Claim", FieldTypeEnum.STRING);
+    put("Envoy.ClaimAll", FieldTypeEnum.STRING);
+    put("Envoy.Remain", FieldTypeEnum.STRING);
+  }};
+
+  private final Map<String, FieldTypeEnum> E_TIME_PLACEHOLDER_FIELDS = new HashMap<>(5) {{
+    put("Envoy.Summon", FieldTypeEnum.STRINGLIST);
+    put("Envoy.Start", FieldTypeEnum.STRINGLIST);
+    put("Envoy.End", FieldTypeEnum.STRING);
+    put("Envoy.Remain", FieldTypeEnum.STRING);
+    put("Envoy.Cooldown", FieldTypeEnum.STRING);
   }};
 
   public void validate(FileConfiguration messages) throws ValidationException {
@@ -105,6 +168,8 @@ public class MessagesValidator implements IValidator {
       validateAmountField(messages, field);
       validateTimeField(messages, field);
       validateLocField(messages, field);
+      validateRemainField(messages, field);
+      validateETimeField(messages, field);
     }
   }
 
@@ -127,8 +192,7 @@ public class MessagesValidator implements IValidator {
     if (Objects.requireNonNull(messages.getString(field)).contains(placeholder)) {
       throw new ValidationException(
           ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.MESSAGES,
-              FieldTypeEnum.STRING,
-              field, placeholder));
+              FieldTypeEnum.STRING, field, placeholder));
     }
   }
 
@@ -139,8 +203,7 @@ public class MessagesValidator implements IValidator {
       if (line.contains(placeholder)) {
         throw new ValidationException(
             ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.MESSAGES,
-                FieldTypeEnum.STRINGLIST,
-                field, placeholder));
+                FieldTypeEnum.STRINGLIST, field, placeholder));
       }
     }
   }
@@ -164,8 +227,7 @@ public class MessagesValidator implements IValidator {
     if (Objects.requireNonNull(messages.getString(field)).contains(placeholder)) {
       throw new ValidationException(
           ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.MESSAGES,
-              FieldTypeEnum.STRING,
-              field, placeholder));
+              FieldTypeEnum.STRING, field, placeholder));
     }
   }
 
@@ -176,8 +238,7 @@ public class MessagesValidator implements IValidator {
       if (line.contains(placeholder)) {
         throw new ValidationException(
             ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.MESSAGES,
-                FieldTypeEnum.STRINGLIST,
-                field, placeholder));
+                FieldTypeEnum.STRINGLIST, field, placeholder));
       }
     }
   }
@@ -201,8 +262,7 @@ public class MessagesValidator implements IValidator {
     if (Objects.requireNonNull(messages.getString(field)).contains(placeholder)) {
       throw new ValidationException(
           ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.MESSAGES,
-              FieldTypeEnum.STRING,
-              field, placeholder));
+              FieldTypeEnum.STRING, field, placeholder));
     }
   }
 
@@ -213,8 +273,7 @@ public class MessagesValidator implements IValidator {
       if (line.contains(placeholder)) {
         throw new ValidationException(
             ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.MESSAGES,
-                FieldTypeEnum.STRINGLIST,
-                field, placeholder));
+                FieldTypeEnum.STRINGLIST, field, placeholder));
       }
     }
   }
@@ -238,8 +297,7 @@ public class MessagesValidator implements IValidator {
     if (Objects.requireNonNull(messages.getString(field)).contains(placeholder)) {
       throw new ValidationException(
           ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.MESSAGES,
-              FieldTypeEnum.STRING,
-              field, placeholder));
+              FieldTypeEnum.STRING, field, placeholder));
     }
   }
 
@@ -250,8 +308,7 @@ public class MessagesValidator implements IValidator {
       if (line.contains(placeholder)) {
         throw new ValidationException(
             ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.MESSAGES,
-                FieldTypeEnum.STRINGLIST,
-                field, placeholder));
+                FieldTypeEnum.STRINGLIST, field, placeholder));
       }
     }
   }
@@ -275,8 +332,7 @@ public class MessagesValidator implements IValidator {
     if (Objects.requireNonNull(messages.getString(field)).contains(placeholder)) {
       throw new ValidationException(
           ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.MESSAGES,
-              FieldTypeEnum.STRING,
-              field, placeholder));
+              FieldTypeEnum.STRING, field, placeholder));
     }
   }
 
@@ -287,8 +343,77 @@ public class MessagesValidator implements IValidator {
       if (line.contains(placeholder)) {
         throw new ValidationException(
             ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.MESSAGES,
-                FieldTypeEnum.STRINGLIST,
-                field, placeholder));
+                FieldTypeEnum.STRINGLIST, field, placeholder));
+      }
+    }
+  }
+
+  private void validateRemainField(FileConfiguration messages, String field)
+      throws ValidationException {
+    if (REMAIN_PLACEHOLDER_FIELDS.containsKey(field)) {
+      return;
+    }
+    if (REMAIN_PLACEHOLDER_FIELDS.get(field) == FieldTypeEnum.STRING) {
+      validateRemainStringField(messages, field);
+    }
+    if (REMAIN_PLACEHOLDER_FIELDS.get(field) == FieldTypeEnum.STRINGLIST) {
+      validateRemainStringListField(messages, field);
+    }
+  }
+
+  private void validateRemainStringField(FileConfiguration messages, String field)
+      throws ValidationException {
+    String placeholder = "%remain%";
+    if (Objects.requireNonNull(messages.getString(field)).contains(placeholder)) {
+      throw new ValidationException(
+          ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.MESSAGES,
+              FieldTypeEnum.STRING, field, placeholder));
+    }
+  }
+
+  private void validateRemainStringListField(FileConfiguration messages, String field)
+      throws ValidationException {
+    String placeholder = "%remain%";
+    for (String line : messages.getStringList(field)) {
+      if (line.contains(placeholder)) {
+        throw new ValidationException(
+            ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.MESSAGES,
+                FieldTypeEnum.STRINGLIST, field, placeholder));
+      }
+    }
+  }
+
+  private void validateETimeField(FileConfiguration messages, String field)
+      throws ValidationException {
+    if (E_TIME_PLACEHOLDER_FIELDS.containsKey(field)) {
+      return;
+    }
+    if (E_TIME_PLACEHOLDER_FIELDS.get(field) == FieldTypeEnum.STRING) {
+      validateETimeStringField(messages, field);
+    }
+    if (E_TIME_PLACEHOLDER_FIELDS.get(field) == FieldTypeEnum.STRINGLIST) {
+      validateETimeStringListField(messages, field);
+    }
+  }
+
+  private void validateETimeStringField(FileConfiguration messages, String field)
+      throws ValidationException {
+    String placeholder = "%e_time%";
+    if (Objects.requireNonNull(messages.getString(field)).contains(placeholder)) {
+      throw new ValidationException(
+          ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.MESSAGES,
+              FieldTypeEnum.STRING, field, placeholder));
+    }
+  }
+
+  private void validateETimeStringListField(FileConfiguration messages, String field)
+      throws ValidationException {
+    String placeholder = "%e_time%";
+    for (String line : messages.getStringList(field)) {
+      if (line.contains(placeholder)) {
+        throw new ValidationException(
+            ValidationException.getPlaceholderErrorMessage(ConfigTypeEnum.MESSAGES,
+                FieldTypeEnum.STRINGLIST, field, placeholder));
       }
     }
   }

@@ -1,0 +1,110 @@
+# Placeholders:
+# %tier% --> tier name of summoned or landed flare (Usable in Name, Lore)
+
+###################
+# General Options #
+###################
+# Name of the envoy.
+# Use something like the location or cooldown time so that players get some information.
+Name: "&c&lDaily"
+# Settings for announcements about envoys and related crates.
+Announce:
+  Enable: True # Whether to enable announcements.
+  # Radius for announcing envoy and crate related actions.
+  # Set to -1 to announce to all players.
+  Radius: 100
+
+################
+# Item Options #
+################
+Item:
+  # Item type of flare item.
+  # List of types for LATEST version: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+  # Please Google for the javadocs for older Minecraft versions, or just ask in the plugin thread :)
+  Type: "REDSTONE_TORCH"
+  # Name of envoy summon item.
+  Name: "%tier% Envoy Flare &b(Right Click)"
+  # Lore of envoy summon item.
+  Lore:
+    - "&fA mysterious beacon from space."
+    - "&fIt seems to radiate signals..."
+    - "&fWhat happens if I use it?"
+
+####################
+# Duration Options #
+####################
+# Settings related to how long the envoy will last before chests are despawned.
+Duration:
+  Random: True # Whether to randomise time between Min and Max. If False, Min time will be used.
+  Min: # Minimum bound of randomising envoy duration.
+    Day: 0
+    Hour: 0
+    Min: 20
+    Sec: 0
+  Max: # Maximum bound of randomising envoy duration.
+    Day: 0
+    Hour: 0
+    Min: 40
+    Sec: 0
+
+####################
+# Cooldown Options #
+####################
+# Settings related to cooldown of the envoy event.
+Cooldown:
+  # Whether envoy automatically starts and stops using the cooldown timer.
+  # If False, envoy will only start when summoned using the item.
+  Enable: True
+  # Whether envoy cooldown is rerolled when manually summoned by player.
+  # If False, the previous cooldown timer is kept.
+  Reset: False
+  Random: True # Whether to randomise time between Min and Max. If False, Min time will be used.
+  Min: # Minimum bound of randomising envoy cooldown.
+    Day: 0
+    Hour: 22
+    Min: 0
+    Sec: 0
+  Max: # Maximum bound of randomising envoy cooldown.
+    Day: 0
+    Hour: 23
+    Min: 0
+    Sec: 0
+  # Current cooldown of envoy.
+  # Updated by plugin, will be used to decide cooldown on server restart.
+  # You can edit this before starting the server to decide the cooldown on next start.
+  Current:
+    Day: 0
+    Hour: 0
+    Min: 30
+    Sec: 0
+
+#################
+# Crate Options #
+#################
+# Settings related to crates spawned in the envoy event.
+# These crates will be randomly distributed over the spawn points.
+# If there are more spawn points than crates, then a random subset of spawn points will be chosen.
+# All crate opens in envoys will be treated as fast opens.
+Crates:
+  Example: # Name of crate to be spawned. This can be any of the file names in the crates folder.
+    Random: True # Whether to randomise the number of crates spawned.
+    Min: 15 # Minimum number of crates to be spawned.
+    Max: 30 # Maximum number of crates to be spawned.
+
+####################
+# Location Options #
+####################
+# Settings related to placement offset vs where you place the location setting blocks in game.
+# For example, Y: 40 means any location you set while in edit mode will be 40 blocks up.
+Offsets:
+  X: 0
+  Y: 40
+  Z: 0
+# Settings related to spawn locations of envoy chests.
+# You may choose to edit them here or edit them in game with the command.
+# I personally recommend the command, it's way easier and foolproof.
+# Please make sure you have more spawn points than the maximum amount of crates that can be spawned.
+# For example, if you can spawn between 15-30 Example crates, have at least 30 spawn points.
+# Example format is "world name,x,y,z"
+# Locations:
+#  - "world,100,100,100"

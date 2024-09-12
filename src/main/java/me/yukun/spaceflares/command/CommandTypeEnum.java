@@ -5,5 +5,10 @@ public enum CommandTypeEnum {
   HELP,
   REDEEM,
   RELOAD,
-  SUMMON
+  SUMMON,
+  LIST,
+  QUERY,
+  EDIT,
+  START,
+  STOP
 }
