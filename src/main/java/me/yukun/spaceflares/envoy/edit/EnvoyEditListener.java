@@ -16,6 +16,9 @@ public class EnvoyEditListener implements Listener {
 
   @EventHandler
   private void envoyAddLocationEvent(BlockPlaceEvent e) {
+    if (e.isCancelled()) {
+      return;
+    }
     Player player = e.getPlayer();
     String envoy = EnvoyEditor.getEditedEnvoy(player);
     if (envoy == null) {
@@ -34,6 +37,9 @@ public class EnvoyEditListener implements Listener {
 
   @EventHandler
   private void envoyRemoveLocationEvent(BlockBreakEvent e) {
+    if (e.isCancelled()) {
+      return;
+    }
     Player player = e.getPlayer();
     String envoy = EnvoyEditor.getEditedEnvoy(player);
     if (envoy == null) {
