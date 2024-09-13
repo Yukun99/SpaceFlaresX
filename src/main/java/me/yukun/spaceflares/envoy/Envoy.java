@@ -74,6 +74,7 @@ public class Envoy {
       Envoy envoy = typeEnvoyActiveMap.get(envoyName);
       envoy.disable();
     }
+    typeEnvoyActiveMap.clear();
   }
 
   /**
@@ -145,7 +146,6 @@ public class Envoy {
       return;
     }
     if (EnvoyEditor.isEditing(type)) {
-      EnvoyEditor.queueEnvoy(type);
       return;
     }
     Envoy envoy = new Envoy(type);
@@ -177,8 +177,22 @@ public class Envoy {
     return typeEnvoyActiveMap.get(type).end();
   }
 
+  /**
+   * Checks if specified envoy is active.
+   *
+   * @param type Type of envoy to be checked.
+   * @return Whether specified envoy is active.
+   */
   public static boolean isActive(String type) {
     return typeEnvoyActiveMap.containsKey(type);
+  }
+
+  public static void startCooldownTimer(String envoy) {
+    typeEnvoyMap.get(envoy).startCooldownTimer();
+  }
+
+  public static void stopCooldownTimer(String envoy) {
+    typeEnvoyMap.get(envoy).stopCooldownTimer();
   }
 
   private void startCooldownTimer() {
@@ -219,7 +233,6 @@ public class Envoy {
     clearAllFlares();
     stopDurationTimer();
     stopCooldownTimer();
-    typeEnvoyActiveMap.remove(type);
   }
 
   private boolean end() {

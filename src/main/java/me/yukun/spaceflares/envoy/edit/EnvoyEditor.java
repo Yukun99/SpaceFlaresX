@@ -17,7 +17,9 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Vibration;
 import org.bukkit.Vibration.Destination.BlockDestination;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -26,7 +28,6 @@ public class EnvoyEditor {
   private static final Map<String, Set<Player>> envoyEditorsMap = new HashMap<>();
   private static final Map<Player, EnvoyEditor> playerEditorMap = new HashMap<>();
   private static final Map<String, List<Material>> envoyBlocksMap = new HashMap<>();
-  private static final Set<String> queuedEnvoys = new HashSet<>();
 
   private final Player player;
   private final ItemStack[] contents;
@@ -92,13 +93,10 @@ public class EnvoyEditor {
     return !hasNoEditors(envoy);
   }
 
-  public static void queueEnvoy(String envoy) {
-    queuedEnvoys.add(envoy);
-  }
-
   private static void startEdit(String envoy, Player player) {
     if (hasNoEditors(envoy)) {
       setupFirstEdit(envoy);
+      Envoy.stopCooldownTimer(envoy);
     }
     Set<Player> editors = envoyEditorsMap.get(envoy);
     editors.add(player);
@@ -112,10 +110,7 @@ public class EnvoyEditor {
     playerEditorMap.remove(player);
     if (hasNoEditors(envoy)) {
       hideEditLocations(envoy);
-      if (queuedEnvoys.contains(envoy)) {
-        queuedEnvoys.remove(envoy);
-        Envoy.startEnvoy(envoy);
-      }
+      Envoy.startCooldownTimer(envoy);
     }
   }
 
@@ -159,7 +154,7 @@ public class EnvoyEditor {
     materials.add(original);
     placed.getBlock().setType(Material.AIR);
     saved.getBlock().setType(Material.BEDROCK);
-    playSavedParticles(placed, saved);
+    playSaveParticles(placed.add(0.5, 0.5, 0.5), saved);
   }
 
   public static Integer getEnvoyLocationIndex(String envoy, Location location) {
@@ -183,16 +178,24 @@ public class EnvoyEditor {
     Material material = materials.get(index);
     materials.remove(index);
     location.getBlock().setType(material);
+    playDeleteParticles(location.add(0.5, 0.5, 0.5));
   }
 
-  private static void playSavedParticles(Location from, Location to) {
+  private static void playSaveParticles(Location from, Location to) {
     Vibration data = new Vibration(from, new BlockDestination(to), 5);
     int spawnTask = Bukkit.getScheduler()
         .scheduleSyncRepeatingTask(SpaceFlares.getPlugin(),
             () -> Objects.requireNonNull(from.getWorld())
-                .spawnParticle(Particle.VIBRATION, from, 1, data), 2, 2);
+                .spawnParticle(Particle.VIBRATION, from, 3, data), 1, 1);
     Bukkit.getScheduler().scheduleSyncDelayedTask(SpaceFlares.getPlugin(),
-        () -> Bukkit.getScheduler().cancelTask(spawnTask), 30);
+        () -> Bukkit.getScheduler().cancelTask(spawnTask), 40);
+  }
+
+  private static void playDeleteParticles(Location deleted) {
+    World world = deleted.getWorld();
+    BlockData data = Bukkit.createBlockData(Material.REDSTONE_BLOCK);
+    assert world != null;
+    world.spawnParticle(Particle.BLOCK, deleted, 50, data);
   }
 
   private EnvoyEditor(Player player) {
