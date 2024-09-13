@@ -3,7 +3,7 @@ package me.yukun.spaceflares.flare.events;
 import me.yukun.spaceflares.config.FlareConfig;
 import me.yukun.spaceflares.config.Messages;
 import me.yukun.spaceflares.flare.Flare;
-import me.yukun.spaceflares.integration.SupportManager;
+import me.yukun.spaceflares.integration.region.RegionSupportManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,7 +24,7 @@ public class FlareUseListener implements Listener {
       return;
     }
     e.setCancelled(true);
-    if (!SupportManager.canSpawnFlare(player, type)) {
+    if (!RegionSupportManager.canSpawnFlare(player, type)) {
       Messages.sendNoSummon(player);
       return;
     }

@@ -97,6 +97,10 @@ public class FlareConfig {
     }
   }
 
+  public static void reloadClear() {
+    nameConfigMap.clear();
+  }
+
   public static void reload() {
     for (FlareConfig flareConfig : nameConfigMap.values()) {
       flareConfig.config = YamlConfiguration.loadConfiguration(flareConfig.file);

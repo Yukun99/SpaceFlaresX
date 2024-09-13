@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import me.yukun.spaceflares.config.ConfigTypeEnum;
 import me.yukun.spaceflares.config.FieldTypeEnum;
-import me.yukun.spaceflares.integration.SupportManager;
+import me.yukun.spaceflares.integration.region.RegionSupportManager;
 import me.yukun.spaceflares.util.Fireworks;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -190,7 +190,7 @@ public class FlareConfigValidator implements IValidator {
               field));
     }
     for (String region : config.getStringList(field)) {
-      if (!SupportManager.isRegion(region)) {
+      if (!RegionSupportManager.isRegion(region)) {
         throw new ValidationException(
             ValidationException.getErrorMessage(ConfigTypeEnum.FLARES, FieldTypeEnum.REGION,
                 field));

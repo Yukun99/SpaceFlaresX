@@ -7,11 +7,11 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import me.yukun.spaceflares.SpaceFlares;
 import me.yukun.spaceflares.config.validator.ConfigValidator;
 import me.yukun.spaceflares.config.validator.MessagesValidator;
 import me.yukun.spaceflares.config.validator.RedeemsValidator;
 import me.yukun.spaceflares.config.validator.ValidationException;
-import me.yukun.spaceflares.util.IOExceptionConsumer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -109,16 +109,31 @@ public class FileManager {
       Messages.printReloaded(configType);
     });
     put(ConfigTypeEnum.FLARES, configType -> {
+      FlareConfig.reloadClear();
+      try {
+        loadFlareFolder(SpaceFlares.getPlugin());
+      } catch (IOException ignored) {
+      }
       FlareConfig.reload();
       setupConfigMap.get(configType).accept(configType);
       Messages.printReloaded(configType);
     });
     put(ConfigTypeEnum.CRATES, configType -> {
+      CrateConfig.reloadClear();
+      try {
+        loadCrateFolder(SpaceFlares.getPlugin());
+      } catch (IOException ignored) {
+      }
       CrateConfig.reload();
       setupConfigMap.get(configType).accept(configType);
       Messages.printReloaded(configType);
     });
     put(ConfigTypeEnum.ENVOYS, configType -> {
+      EnvoyConfig.reloadClear();
+      try {
+        loadEnvoyFolder(SpaceFlares.getPlugin());
+      } catch (IOException ignored) {
+      }
       EnvoyConfig.reload();
       setupConfigMap.get(configType).accept(configType);
       Messages.printReloaded(configType);

@@ -14,6 +14,7 @@ import me.yukun.spaceflares.config.CrateConfig;
 import me.yukun.spaceflares.config.FlareConfig;
 import me.yukun.spaceflares.config.Messages;
 import me.yukun.spaceflares.flare.events.FlareFireworkListener;
+import me.yukun.spaceflares.integration.hologram.HologramSupportManager;
 import me.yukun.spaceflares.util.Fireworks;
 import me.yukun.spaceflares.util.InventoryHandler;
 import org.bukkit.Bukkit;
@@ -185,6 +186,12 @@ public class Flare {
     stopFireworks();
     this.block = block;
     blockMap.put(block, this);
+
+    HologramSupportManager.addHologram(
+        this,
+        CrateConfig.getCrateFlareHologramLocation(type, block.getLocation()),
+        CrateConfig.getCrateFlareHologramLabel(type));
+
     startDespawnTimer();
 
     setRewards();
@@ -295,6 +302,8 @@ public class Flare {
       giveItemRewards(player);
     }
     endCrate();
+    Messages.sendDespawnNotify(player, type, block.getLocation());
+    Messages.sendDespawnAll(player, type, block.getLocation());
   }
 
   /**
@@ -374,10 +383,8 @@ public class Flare {
       player.closeInventory();
     }
 
-    Messages.sendDespawnNotify(player, type, block.getLocation());
-    Messages.sendDespawnAll(player, type, block.getLocation());
-
     block.setType(Material.AIR);
+    HologramSupportManager.deleteHologram(this);
   }
 
   /**

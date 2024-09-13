@@ -12,6 +12,7 @@ import java.util.Random;
 import me.yukun.spaceflares.config.validator.CrateConfigValidator;
 import me.yukun.spaceflares.config.validator.ValidationException;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -98,6 +99,10 @@ public class CrateConfig {
     }
   }
 
+  public static void reloadClear() {
+    nameConfigMap.clear();
+  }
+
   public static void reload() {
     for (CrateConfig crateConfig : nameConfigMap.values()) {
       crateConfig.config = YamlConfiguration.loadConfiguration(crateConfig.file);
@@ -142,6 +147,22 @@ public class CrateConfig {
 
   public static List<String> getCrateCommandRewards(String crate) {
     return nameConfigMap.get(crate).getCommandRewards();
+  }
+
+  public static List<String> getCrateFlareHologramLabel(String crate) {
+    return nameConfigMap.get(crate).getFlareHologramLabel(crate);
+  }
+
+  public static Location getCrateFlareHologramLocation(String crate, Location block) {
+    return nameConfigMap.get(crate).getFlareHologramLocation(block);
+  }
+
+  public static List<String> getCrateEnvoyHologramLabel(String crate, String envoy) {
+    return nameConfigMap.get(crate).getEnvoyHologramLabel(crate, envoy);
+  }
+
+  public static Location getCrateEnvoyHologramLocation(String crate, Location block) {
+    return nameConfigMap.get(crate).getEnvoyHologramLocation(block);
   }
 
   private BlockData getBlock() {
@@ -206,5 +227,48 @@ public class CrateConfig {
       }
     }
     return rewards;
+  }
+
+  private boolean getFlareHologramEnable() {
+    return config.getBoolean("Hologram.Flare.Enable");
+  }
+
+  private List<String> getFlareHologramLabel(String flare) {
+    List<String> label = new ArrayList<>();
+    if (!getFlareHologramEnable()) {
+      return label;
+    }
+    for (String line : config.getStringList("Hologram.Flare.Label")) {
+      line = line.replaceAll("%tier%", FlareConfig.getFlareTier(flare));
+      label.add(line);
+    }
+    return label;
+  }
+
+  private Location getFlareHologramLocation(Location block) {
+    double offset = config.getDouble("Hologram.Flare.Height");
+    return block.add(0.5, offset, 0.5);
+  }
+
+  private boolean getEnvoyHologramEnable() {
+    return config.getBoolean("Hologram.Envoy.Enable");
+  }
+
+  private List<String> getEnvoyHologramLabel(String flare, String envoy) {
+    List<String> label = new ArrayList<>();
+    if (!getEnvoyHologramEnable()) {
+      return label;
+    }
+    for (String line : config.getStringList("Hologram.Envoy.Label")) {
+      line = line.replaceAll("%tier%", FlareConfig.getFlareTier(flare));
+      line = line.replaceAll("%envoy%", EnvoyConfig.getEnvoyName(envoy));
+      label.add(line);
+    }
+    return label;
+  }
+
+  private Location getEnvoyHologramLocation(Location block) {
+    double offset = config.getDouble("Hologram.Envoy.Height");
+    return block.add(0.5, offset, 0.5);
   }
 }

@@ -1,4 +1,4 @@
-package me.yukun.spaceflares.util;
+package me.yukun.spaceflares.config;
 
 import java.io.IOException;
 

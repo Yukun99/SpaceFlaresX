@@ -1,4 +1,4 @@
-package me.yukun.spaceflares.integration;
+package me.yukun.spaceflares.integration.region;
 
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.math.BlockVector3;

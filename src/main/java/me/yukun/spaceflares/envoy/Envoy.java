@@ -9,7 +9,7 @@ import me.yukun.spaceflares.SpaceFlares;
 import me.yukun.spaceflares.config.EnvoyConfig;
 import me.yukun.spaceflares.config.Messages;
 import me.yukun.spaceflares.envoy.edit.EnvoyEditor;
-import me.yukun.spaceflares.util.Time;
+import me.yukun.spaceflares.util.Serialiser;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -20,7 +20,6 @@ public class Envoy {
 
   private static final Map<String, Envoy> typeEnvoyActiveMap = new HashMap<>();
   private static final Map<String, Envoy> typeEnvoyMap = new HashMap<>();
-  private static final Time TIME = new Time();
 
   private final String type;
   private final Set<EnvoyFlare> flares = new HashSet<>();
@@ -43,10 +42,12 @@ public class Envoy {
     Map<String, Integer> crates = EnvoyConfig.getEnvoyCrates(type);
     int count = crates.values().stream().reduce(0, Integer::sum);
     List<Location> locations = EnvoyConfig.getEnvoyRandomLocations(type, count);
+    int index = 0;
     for (String crate : crates.keySet()) {
       for (int i = 0; i < crates.get(crate); i++) {
-        Location location = locations.get(i);
+        Location location = locations.get(index);
         flares.add(new EnvoyFlare(crate, location, this));
+        index++;
       }
     }
   }
@@ -58,10 +59,14 @@ public class Envoy {
     typeEnvoyMap.put(type, this);
   }
 
+  protected String getType() {
+    return type;
+  }
+
   public static void onDisable() {
     stopAllEnvoys();
     for (Envoy envoy : typeEnvoyMap.values()) {
-      EnvoyConfig.saveEnvoyCooldown(envoy.type, TIME.getListFromSecs(envoy.cooldown));
+      EnvoyConfig.saveEnvoyCooldown(envoy.type, Serialiser.serialiseTime(envoy.cooldown));
     }
   }
 
@@ -95,7 +100,7 @@ public class Envoy {
     }
     typeEnvoyActiveMap.put(type, envoy);
 
-    List<Integer> durationList = TIME.getListFromSecs(envoy.duration);
+    List<Integer> durationList = Serialiser.serialiseTime(envoy.duration);
     Messages.sendEnvoySummon(sender, type, envoy.flares.size(), durationList);
     return envoy;
   }
@@ -114,7 +119,7 @@ public class Envoy {
       return false;
     }
     envoy.consumeFlare(player);
-    List<Integer> durationList = TIME.getListFromSecs(envoy.duration);
+    List<Integer> durationList = Serialiser.serialiseTime(envoy.duration);
     Messages.sendEnvoyStart(player, type, envoy.flares.size(), durationList);
     return true;
   }
@@ -150,7 +155,8 @@ public class Envoy {
     }
     Envoy envoy = new Envoy(type);
     typeEnvoyActiveMap.put(type, envoy);
-    Messages.sendEnvoyStart(null, type, envoy.flares.size(), TIME.getListFromSecs(envoy.duration));
+    Messages.sendEnvoyStart(null, type, envoy.flares.size(),
+        Serialiser.serialiseTime(envoy.duration));
   }
 
   /**
@@ -248,7 +254,7 @@ public class Envoy {
       startCooldownTimer();
     }
     typeEnvoyActiveMap.remove(type);
-    Messages.sendEnvoyEnd(type, TIME.getListFromSecs(cooldown));
+    Messages.sendEnvoyEnd(type, Serialiser.serialiseTime(cooldown));
     return true;
   }
 
@@ -285,10 +291,10 @@ public class Envoy {
   }
 
   private List<Integer> getDuration() {
-    return TIME.getListFromSecs(duration);
+    return Serialiser.serialiseTime(duration);
   }
 
   private List<Integer> getCooldown() {
-    return TIME.getListFromSecs(cooldown);
+    return Serialiser.serialiseTime(cooldown);
   }
 }

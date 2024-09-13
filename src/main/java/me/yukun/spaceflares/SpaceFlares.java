@@ -15,7 +15,8 @@ import me.yukun.spaceflares.flare.events.FlareFireworkListener;
 import me.yukun.spaceflares.flare.events.FlareLandListener;
 import me.yukun.spaceflares.flare.events.FlareUseListener;
 import me.yukun.spaceflares.flare.events.RewardGUIListener;
-import me.yukun.spaceflares.integration.SupportManager;
+import me.yukun.spaceflares.integration.hologram.HologramSupportManager;
+import me.yukun.spaceflares.integration.region.RegionSupportManager;
 import me.yukun.spaceflares.redeem.RedeemGUI;
 import me.yukun.spaceflares.redeem.RedeemGUIListener;
 import org.bukkit.Bukkit;
@@ -76,11 +77,17 @@ public class SpaceFlares extends JavaPlugin implements Listener {
       return;
     }
     Messages.sendPluginVersion(player, this);
-    if (SupportManager.hasWorldGuard()) {
+    if (RegionSupportManager.hasWorldGuard()) {
       Messages.sendIntegrationEnabled(player, "WorldGuard");
     }
-    if (SupportManager.hasFactions()) {
+    if (RegionSupportManager.hasSaberFactions()) {
       Messages.sendIntegrationEnabled(player, "Factions");
+    }
+    if (HologramSupportManager.hasCMIHolograms()) {
+      Messages.sendIntegrationEnabled(player, "CMI");
+    }
+    if (HologramSupportManager.hasDecentHolograms()) {
+      Messages.sendIntegrationEnabled(player, "DecentHolograms");
     }
     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
     if (isConfigErrored) {

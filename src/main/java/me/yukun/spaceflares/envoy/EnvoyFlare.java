@@ -1,18 +1,15 @@
 package me.yukun.spaceflares.envoy;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import me.yukun.spaceflares.config.CrateConfig;
 import me.yukun.spaceflares.config.Messages;
 import me.yukun.spaceflares.flare.Flare;
+import me.yukun.spaceflares.integration.hologram.HologramSupportManager;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 public class EnvoyFlare extends Flare {
@@ -43,6 +40,11 @@ public class EnvoyFlare extends Flare {
     this.block = block;
     blockMap.put(block, this);
 
+    HologramSupportManager.addHologram(
+        this,
+        CrateConfig.getCrateEnvoyHologramLocation(type, block.getLocation()),
+        CrateConfig.getCrateEnvoyHologramLabel(type, envoy.getType()));
+
     setRewards();
   }
 
@@ -62,7 +64,7 @@ public class EnvoyFlare extends Flare {
 
     int remain = envoy.getRemain();
     Messages.sendEnvoyClaim(player, type, remain);
-    Messages.sendEnvoyClaimAll(player, type, remain, block.getLocation());
+    Messages.sendEnvoyClaimAll(player, envoy.getType(), type, remain, block.getLocation());
     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 10);
   }
 
@@ -78,15 +80,7 @@ public class EnvoyFlare extends Flare {
     if (itemRewards == null) {
       return;
     }
-
-    guiMap.remove(itemRewards);
-    itemRewards.clear();
-    List<HumanEntity> viewers = new ArrayList<>(itemRewards.getViewers());
-    for (HumanEntity player : viewers) {
-      player.closeInventory();
-    }
-
-    block.setType(Material.AIR);
+    super.clearCrate();
   }
 
   @Override

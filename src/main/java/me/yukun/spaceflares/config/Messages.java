@@ -730,15 +730,17 @@ public class Messages {
    * Sends message to all players for when a player claims an envoy crate.
    *
    * @param player Player who claimed envoy crate.
+   * @param envoy  Envoy to announce claim for.
    * @param tier   Tier of envoy crate claimed.
    * @param remain Number of crates remaining in the envoy.
    * @param loc    Location of crate claimed.
    */
-  public static void sendEnvoyClaimAll(Player player, String tier, int remain, Location loc) {
-    if (!EnvoyConfig.getEnvoyDoAnnounce(tier)) {
+  public static void sendEnvoyClaimAll(Player player, String envoy, String tier, int remain,
+      Location loc) {
+    if (!EnvoyConfig.getEnvoyDoAnnounce(envoy)) {
       return;
     }
-    int range = EnvoyConfig.getEnvoyAnnounceRange(tier);
+    int range = EnvoyConfig.getEnvoyAnnounceRange(envoy);
     String message = replacePlayerTierRemainLoc(envoyClaimAll, player, tier, remain, loc);
     for (Player other : getPlayersInRange(player, range)) {
       if (other.equals(player)) {

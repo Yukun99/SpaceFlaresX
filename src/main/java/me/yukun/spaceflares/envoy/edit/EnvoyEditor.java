@@ -28,6 +28,7 @@ public class EnvoyEditor {
   private static final Map<String, Set<Player>> envoyEditorsMap = new HashMap<>();
   private static final Map<Player, EnvoyEditor> playerEditorMap = new HashMap<>();
   private static final Map<String, List<Material>> envoyBlocksMap = new HashMap<>();
+  private static final Map<String, List<Location>> envoyLocationsMap = new HashMap<>();
 
   private final Player player;
   private final ItemStack[] contents;
@@ -43,7 +44,7 @@ public class EnvoyEditor {
   private static void stopAllEditing() {
     for (String envoy : envoyEditorsMap.keySet()) {
       for (Player player : envoyEditorsMap.get(envoy)) {
-        toggleEditing(envoy, player);
+        stopEdit(envoy, player, true);
       }
     }
   }
@@ -63,7 +64,7 @@ public class EnvoyEditor {
         Messages.sendEnvoyEditEditing(player);
       } else {
         // Player wants to stop editing stated envoy.
-        stopEdit(envoy, player);
+        stopEdit(envoy, player, false);
         Messages.sendEnvoyEditStop(player, envoy);
       }
     } else {
@@ -103,14 +104,16 @@ public class EnvoyEditor {
     playerEditorMap.put(player, new EnvoyEditor(player));
   }
 
-  private static void stopEdit(String envoy, Player player) {
+  private static void stopEdit(String envoy, Player player, boolean isDisable) {
     Set<Player> editors = envoyEditorsMap.get(envoy);
     editors.remove(player);
     playerEditorMap.get(player).revertInventory();
     playerEditorMap.remove(player);
     if (hasNoEditors(envoy)) {
+      if (!isDisable) {
+        Envoy.startCooldownTimer(envoy);
+      }
       hideEditLocations(envoy);
-      Envoy.startCooldownTimer(envoy);
     }
   }
 
@@ -129,9 +132,12 @@ public class EnvoyEditor {
   }
 
   private static void showEditLocations(String envoy) {
+    List<Location> locations = new ArrayList<>();
+    envoyLocationsMap.put(envoy, locations);
     List<Material> types = new ArrayList<>();
     envoyBlocksMap.put(envoy, types);
     for (Location location : EnvoyConfig.getEnvoyLocations(envoy)) {
+      locations.add(location);
       Block block = location.getBlock();
       types.add(block.getType());
       block.setType(Material.BEDROCK);
@@ -139,16 +145,19 @@ public class EnvoyEditor {
   }
 
   private static void hideEditLocations(String envoy) {
+    List<Location> locations = envoyLocationsMap.get(envoy);
     List<Material> types = envoyBlocksMap.get(envoy);
-    List<Location> locations = EnvoyConfig.getEnvoyLocations(envoy);
     for (int i = 0; i < types.size(); i++) {
       Block block = locations.get(i).getBlock();
       block.setType(types.get(i));
     }
+    envoyLocationsMap.remove(envoy);
     envoyBlocksMap.remove(envoy);
   }
 
   public static void addEnvoyLocation(String envoy, Location saved, Location placed) {
+    List<Location> locations = envoyLocationsMap.get(envoy);
+    locations.add(saved);
     Material original = saved.getBlock().getType();
     List<Material> materials = envoyBlocksMap.get(envoy);
     materials.add(original);
@@ -158,7 +167,7 @@ public class EnvoyEditor {
   }
 
   public static Integer getEnvoyLocationIndex(String envoy, Location location) {
-    List<Location> locations = EnvoyConfig.getEnvoyLocations(envoy);
+    List<Location> locations = envoyLocationsMap.get(envoy);
     for (int i = 0; i < locations.size(); i++) {
       Location saved = locations.get(i);
       if (!Objects.equals(saved.getWorld(), location.getWorld())) {
@@ -174,6 +183,8 @@ public class EnvoyEditor {
   }
 
   public static void removeEnvoyLocation(String envoy, Location location, int index) {
+    List<Location> locations = envoyLocationsMap.get(envoy);
+    locations.remove(index);
     List<Material> materials = envoyBlocksMap.get(envoy);
     Material material = materials.get(index);
     materials.remove(index);

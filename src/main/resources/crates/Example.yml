@@ -1,5 +1,7 @@
 # Placeholders:
-# %player% --> player to execute command on (Usable in Commands)
+# %player% --> player to execute command on. Usable in: Commands
+# %tier% --> tier of flare the crate corresponds to. Usable in: Hologram.Flare.Label, Hologram.Envoy.Label
+# %envoy% --> envoy the crate was summoned by. Usable in: Hologram.Envoy.Label
 
 ###################
 # General Options #
@@ -64,3 +66,23 @@ Rewards:
     Commands: # Commands to run to reward player.
       - "say %player% is lucky!"
       - "give %player% minecraft:emerald 4"
+
+####################
+# Hologram Options #
+####################
+# Settings for holograms. These will only display if you have necessary hologram plugins installed.
+# Supported plugins: FancyHolograms, DecentHolograms
+Hologram:
+  Flare:
+    Enable: True # Whether to enable holograms for flare crates.
+    Label: # Hologram text to be displayed above the crate.
+      - "%tier% Supply Crate"
+      - "&fClaim me for rewards!"
+    Height: 1.5
+  Envoy:
+    Enable: True # Whether to enable holograms for envoy crates.
+    Label:
+      - "%tier% Supply Crate"
+      - "&fClaim me for rewards!"
+      - "&fSpawned by: %envoy%"
+    Height: 1.75

@@ -12,13 +12,16 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class CrateConfigValidator implements IValidator {
 
-  private final List<String> SECTIONS = new ArrayList<>(3) {{
+  private final List<String> SECTIONS = new ArrayList<>(6) {{
     add("FastClaim");
     add("Despawn");
     add("Rewards");
+    add("Hologram");
+    add("Hologram.Flare");
+    add("Hologram.Envoy");
   }};
 
-  private final Map<String, FieldTypeEnum> FIELDS = new HashMap<>(9) {{
+  private final Map<String, FieldTypeEnum> FIELDS = new HashMap<>(14) {{
     put("Block", FieldTypeEnum.MATERIAL);
     put("FastClaim.Drop", FieldTypeEnum.BOOLEAN);
     put("FastClaim.Exit", FieldTypeEnum.BOOLEAN);
@@ -29,6 +32,10 @@ public class CrateConfigValidator implements IValidator {
     put("Despawn.Time", FieldTypeEnum.INTEGER);
     put("Despawn.Give", FieldTypeEnum.BOOLEAN);
     put("Size", FieldTypeEnum.INTEGER);
+    put("Hologram.Flare.Enable", FieldTypeEnum.BOOLEAN);
+    put("Hologram.Flare.Label", FieldTypeEnum.STRINGLIST);
+    put("Hologram.Envoy.Enable", FieldTypeEnum.BOOLEAN);
+    put("Hologram.Envoy.Label", FieldTypeEnum.STRINGLIST);
   }};
 
   private final Map<String, FieldTypeEnum> REWARD_ITEM_FIELDS = new HashMap<>(4) {{

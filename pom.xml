@@ -6,7 +6,7 @@
 
   <groupId>me.yukun</groupId>
   <artifactId>SpaceFlaresX</artifactId>
-  <version>1.1.0b</version>
+  <version>1.1.1</version>
 
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
@@ -26,10 +26,21 @@
       <id>sk89q-repo</id>
       <url>https://repo.minebench.de/</url>
     </repository>
-    <!-- SaberFactions -->
+    <!-- SaberFactions / DecentHolograms -->
     <repository>
       <id>jitpack.io</id>
       <url>https://jitpack.io/</url>
+    </repository>
+    <!-- CMI -->
+    <repository>
+      <id>lumine-repo</id>
+      <url>https://mvn.lumine.io/repository/maven-public/</url>
+    </repository>
+    <!-- CodeMC -->
+    <repository>
+      <id>codemc-repo</id>
+      <url>https://repo.codemc.io/repository/maven-public/</url>
+      <layout>default</layout>
     </repository>
   </repositories>
 
@@ -48,13 +59,14 @@
       <version>1.21.1-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
-    <!-- WorldGuard / WorldEdit -->
+    <!-- WorldGuard -->
     <dependency>
       <groupId>com.sk89q.worldguard</groupId>
       <artifactId>worldguard-bukkit</artifactId>
       <version>7.0.5</version>
       <scope>provided</scope>
     </dependency>
+    <!-- WorldEdit -->
     <dependency>
       <groupId>com.sk89q.worldedit</groupId>
       <artifactId>worldedit-bukkit</artifactId>
@@ -67,6 +79,25 @@
       <artifactId>Saber-Factions</artifactId>
       <version>4.1.4-STABLE</version>
       <scope>provided</scope>
+    </dependency>
+    <!-- CMI -->
+    <dependency>
+      <groupId>com.Zrips</groupId>
+      <artifactId>CMI</artifactId>
+      <version>9.0.2.8</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.Zrips</groupId>
+      <artifactId>CMILib</artifactId>
+      <version>1.0.3.6</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- FancyHolograms -->
+    <dependency>
+      <groupId>com.github.decentsoftware-eu</groupId>
+      <artifactId>decentholograms</artifactId>
+      <version>2.8.11</version>
     </dependency>
   </dependencies>
 

@@ -15,12 +15,10 @@ import me.yukun.spaceflares.SpaceFlares;
 import me.yukun.spaceflares.config.validator.EnvoyConfigValidator;
 import me.yukun.spaceflares.config.validator.ValidationException;
 import me.yukun.spaceflares.envoy.Envoy;
-import me.yukun.spaceflares.util.Time;
-import org.bukkit.Bukkit;
+import me.yukun.spaceflares.util.Serialiser;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -35,7 +33,6 @@ public class EnvoyConfig {
   private static final Random RANDOM = new Random();
   private static final NamespacedKey ENVOY_KEY = new NamespacedKey(SpaceFlares.getPlugin(),
       "Envoy");
-  private static final Time TIME = new Time();
 
   private final String name;
   private FileConfiguration config;
@@ -99,10 +96,10 @@ public class EnvoyConfig {
   }
 
   private void setupEnvoyTimes() {
-    minDuration = TIME.getSecsFromList(getDurationMin());
-    maxDuration = TIME.getSecsFromList(getDurationMax());
-    minCooldown = TIME.getSecsFromList(getCooldownMin());
-    maxCooldown = TIME.getSecsFromList(getCooldownMax());
+    minDuration = Serialiser.deserialiseTime(getDurationMin());
+    maxDuration = Serialiser.deserialiseTime(getDurationMax());
+    minCooldown = Serialiser.deserialiseTime(getCooldownMin());
+    maxCooldown = Serialiser.deserialiseTime(getCooldownMax());
   }
 
   public static void validate() {
@@ -115,6 +112,10 @@ public class EnvoyConfig {
         Messages.printConfigError(e);
       }
     }
+  }
+
+  public static void reloadClear() {
+    nameConfigMap.clear();
   }
 
   public static void reload() {
@@ -194,6 +195,9 @@ public class EnvoyConfig {
   }
 
   public static List<Location> getEnvoyLocations(String envoy) {
+    if (!nameConfigMap.containsKey(envoy)) {
+      return new ArrayList<>();
+    }
     return nameConfigMap.get(envoy).getLocations();
   }
 
@@ -202,6 +206,9 @@ public class EnvoyConfig {
   }
 
   public static void saveEnvoyCooldown(String envoy, List<Integer> cooldown) {
+    if (!nameConfigMap.containsKey(envoy)) {
+      return;
+    }
     FileConfiguration config = nameConfigMap.get(envoy).config;
     String key = "Cooldown.Current.";
     config.set(key + "Day", cooldown.get(0));
@@ -276,7 +283,7 @@ public class EnvoyConfig {
   }
 
   private int getSavedCooldown() {
-    return TIME.getSecsFromList(getSavedCooldownList());
+    return Serialiser.deserialiseTime(getSavedCooldownList());
   }
 
   private List<Integer> getSavedCooldownList() {
@@ -348,12 +355,7 @@ public class EnvoyConfig {
     }
     List<String> locationList =
         config.isList("Locations") ? config.getStringList("Locations") : new ArrayList<>();
-    String world = Objects.requireNonNull(offset.getWorld()).getName();
-    int x = offset.getBlockX();
-    int y = offset.getBlockY();
-    int z = offset.getBlockZ();
-    String offsetString = world + "," + x + "," + y + "," + z;
-    locationList.add(offsetString);
+    locationList.add(Serialiser.serialiseLocation(location));
     config.set("Locations", locationList);
     try {
       config.save(file);
@@ -402,12 +404,7 @@ public class EnvoyConfig {
       return locations;
     }
     for (String line : config.getStringList("Locations")) {
-      String[] split = line.split("\\s*,\\s*");
-      World world = Bukkit.getWorld(split[0]);
-      int x = Integer.parseInt(split[1]);
-      int y = Integer.parseInt(split[2]);
-      int z = Integer.parseInt(split[3]);
-      locations.add(new Location(world, x, y, z));
+      locations.add(Serialiser.deserialiseLocation(line));
     }
     return locations;
   }

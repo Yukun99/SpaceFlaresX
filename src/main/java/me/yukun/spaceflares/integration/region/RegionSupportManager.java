@@ -1,4 +1,4 @@
-package me.yukun.spaceflares.integration;
+package me.yukun.spaceflares.integration.region;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,14 +7,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public class SupportManager {
+public class RegionSupportManager {
 
   @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   public static boolean hasWorldGuard() {
     return Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
   }
 
-  public static boolean hasFactions() {
+  public static boolean hasSaberFactions() {
     return Bukkit.getPluginManager().isPluginEnabled("Factions");
   }
 
@@ -34,7 +34,7 @@ public class SupportManager {
    * @return Whether spawning boundaries around specified player are valid.
    */
   public static boolean canSpawnFlare(Player player, String flare) {
-    if (!hasFactions() && !hasWorldGuard()) {
+    if (!hasSaberFactions() && !hasWorldGuard()) {
       return true;
     }
     Location location = player.getLocation();
@@ -42,7 +42,7 @@ public class SupportManager {
         && hasNoBuildFlag(location, flare)) {
       return true;
     }
-    return hasFactions() && isInWarzone(location, flare);
+    return hasSaberFactions() && isInWarzone(location, flare);
   }
 
   /**
@@ -118,11 +118,11 @@ public class SupportManager {
     if (!FlareConfig.getFlareRegionUseWarzone(flare)) {
       return true;
     }
-    if (!hasFactions()) {
+    if (!hasSaberFactions()) {
       return true;
     }
     for (Location deflected : getBounds(location, flare)) {
-      if (!FactionsSupport.isInWarzone(deflected)) {
+      if (!SaberFactionsSupport.isInWarzone(deflected)) {
         return false;
       }
     }
