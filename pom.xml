@@ -121,7 +121,7 @@
         <version>2.4</version>
         <configuration>
           <!-- Output directory for the JAR file -->
-          <outputDirectory>${project.basedir}/../../plugins/releases/SpaceFlaresX</outputDirectory>
+          <outputDirectory>${project.basedir}/../../Minecraft Plugins/SpaceFlaresX</outputDirectory>
         </configuration>
       </plugin>
     </plugins>
