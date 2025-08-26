@@ -51,6 +51,7 @@ Region:
     PvPFlag: True # Whether player must be in a PvP flag enabled area to summon flare.
     NoBuild: True # Whether player must be in a build flag disabled area to summon flare.
   Warzone: True # Whether flare must be summoned in Factions Warzones.
+  Skyblock: True # Whether flare can be summoned on any Skyblock Island with co-op access.
 
 ####################
 # Firework Options #

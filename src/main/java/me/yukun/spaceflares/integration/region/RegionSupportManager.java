@@ -1,13 +1,16 @@
 package me.yukun.spaceflares.integration.region;
 
-import java.util.ArrayList;
-import java.util.List;
 import me.yukun.spaceflares.config.FlareConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RegionSupportManager {
+
+  private RegionSupportManager() {}
 
   @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   public static boolean hasWorldGuard() {
@@ -16,6 +19,10 @@ public class RegionSupportManager {
 
   public static boolean hasSaberFactions() {
     return Bukkit.getPluginManager().isPluginEnabled("Factions");
+  }
+
+  public static boolean hasSuperiorSkyblock() {
+    return Bukkit.getPluginManager().isPluginEnabled("SuperiorSkyblock2");
   }
 
   public static boolean isRegion(String region) {
@@ -28,13 +35,12 @@ public class RegionSupportManager {
   /**
    * Checks the spawning boundaries around specified player for valid region settings.
    * <p>We do this so that players can only spawn flares when they are well in range.</p>
-   *
    * @param player Player whose location spawning boundaries are centered around.
-   * @param flare  Type of flare to check spawning boundaries for.
+   * @param flare Type of flare to check spawning boundaries for.
    * @return Whether spawning boundaries around specified player are valid.
    */
   public static boolean canSpawnFlare(Player player, String flare) {
-    if (!hasSaberFactions() && !hasWorldGuard()) {
+    if (!hasSaberFactions() && !hasWorldGuard() && !hasSuperiorSkyblock()) {
       return true;
     }
     Location location = player.getLocation();
@@ -42,15 +48,17 @@ public class RegionSupportManager {
         && hasNoBuildFlag(location, flare)) {
       return true;
     }
-    return hasSaberFactions() && isInWarzone(location, flare);
+    if (hasSaberFactions() && isInWarzone(location, flare)) {
+      return true;
+    }
+    return hasSuperiorSkyblock() && isInIsland(player, flare);
   }
 
   /**
    * Checks the spawning boundaries around specified location for enabled PvP flag.
    * <p>We do this so that players can only spawn flares when they are well in range.</p>
-   *
    * @param location Location where spawning boundaries are centered around.
-   * @param flare    Type of flare to check spawning boundaries for.
+   * @param flare Type of flare to check spawning boundaries for.
    * @return Whether spawning boundaries around specified location has PvP flag enabled.
    */
   private static boolean hasPvPFlag(Location location, String flare) {
@@ -71,9 +79,8 @@ public class RegionSupportManager {
   /**
    * Checks the spawning boundaries around specified location for disabled Build flag.
    * <p>We do this so that players can only spawn flares when they are well in range.</p>
-   *
    * @param location Location where spawning boundaries are centered around.
-   * @param flare    Type of flare to check spawning boundaries for.
+   * @param flare Type of flare to check spawning boundaries for.
    * @return Whether spawning boundaries around specified location has Build flag disabled.
    */
   private static boolean hasNoBuildFlag(Location location, String flare) {
@@ -94,9 +101,8 @@ public class RegionSupportManager {
   /**
    * Checks the spawning boundaries around specified location for being in a valid region.
    * <p>We do this so that players can only spawn flares when they are well in range.</p>
-   *
    * @param location Location where spawning boundaries are centered around.
-   * @param flare    Type of flare to check spawning boundaries for.
+   * @param flare Type of flare to check spawning boundaries for.
    * @return Whether spawning boundaries around specified location are in a valid region.
    */
   private static boolean isInRegion(Location location, String flare) {
@@ -114,6 +120,12 @@ public class RegionSupportManager {
     return true;
   }
 
+  /**
+   * Checks the spawning boundaries around specified location for being in the Warzone.
+   * @param location Location where spawning boundaries are centered around.
+   * @param flare Type of flare to check spawning boundaries for.
+   * @return Whether spawning boundaries around specified location are in the Warzone.
+   */
   private static boolean isInWarzone(Location location, String flare) {
     if (!FlareConfig.getFlareRegionUseWarzone(flare)) {
       return true;
@@ -123,6 +135,27 @@ public class RegionSupportManager {
     }
     for (Location deflected : getBounds(location, flare)) {
       if (!SaberFactionsSupport.isInWarzone(deflected)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Checks the spawning boundaries around specified location for being in the SuperiorSkyblock island.
+   * @param player Player whose location spawning boundaries are centered around.
+   * @param flare Type of flare to check spawning boundaries for.
+   * @return Whether spawning boundaries around specified location are in the SuperiorSkyblock island.
+   */
+  private static boolean isInIsland(Player player, String flare) {
+    if (!FlareConfig.getFlareRegionUseSkyblock(flare)) {
+      return true;
+    }
+    if (!hasSuperiorSkyblock()) {
+      return true;
+    }
+    for (Location deflected : getBounds(player.getLocation(), flare)) {
+      if (!SuperiorSkyblockSupport.isInIsland(player, deflected)) {
         return false;
       }
     }

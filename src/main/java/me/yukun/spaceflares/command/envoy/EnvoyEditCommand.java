@@ -1,7 +1,6 @@
 package me.yukun.spaceflares.command.envoy;
 
 import me.yukun.spaceflares.command.AbstractCommand;
-import me.yukun.spaceflares.command.HelpCommand;
 import me.yukun.spaceflares.config.EnvoyConfig;
 import me.yukun.spaceflares.envoy.edit.EnvoyEditor;
 import org.bukkit.command.CommandSender;
@@ -20,10 +19,10 @@ public class EnvoyEditCommand extends AbstractCommand {
 
   public static AbstractCommand parseCommand(CommandSender sender, String envoy) {
     if (!(sender instanceof Player player)) {
-      return new HelpCommand(sender, false);
+      return getDefaultHelpCommand(sender);
     }
     if (!EnvoyConfig.isEnvoy(envoy)) {
-      return new HelpCommand(sender, false);
+      return getDefaultHelpCommand(sender);
     }
     return new EnvoyEditCommand(sender, player, envoy);
   }

@@ -1,12 +1,6 @@
 package me.yukun.spaceflares.config;
 
-import static me.yukun.spaceflares.util.TextFormatter.applyColor;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import me.yukun.spaceflares.SpaceFlares;
 import me.yukun.spaceflares.command.CommandManager;
 import me.yukun.spaceflares.command.CommandTypeEnum;
 import org.bukkit.Bukkit;
@@ -16,7 +10,41 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static me.yukun.spaceflares.util.TextFormatter.applyColor;
+
 public class Messages {
+
+  private Messages() {}
+
+  private static final Logger logger = SpaceFlares.getPlugin().getLogger();
+
+  // Replaced placeholders
+  private static final String PH_VERSION = "%version%";
+  private static final String PH_INTEGRATION = "%integration%";
+  private static final String PH_FILE = "%file%";
+  private static final String PH_WORLD = "%world%";
+  private static final String PH_X = "%x%";
+  private static final String PH_Y = "%y%";
+  private static final String PH_Z = "%z%";
+  private static final String PH_USERNAME = "%username%";
+  private static final String PH_DISPLAYNAME = "%displayname%";
+  private static final String PH_DAY = "%day%";
+  private static final String PH_HOUR = "%hour%";
+  private static final String PH_MIN = "%minute%";
+  private static final String PH_SEC = "%second%";
+  private static final String PH_AMOUNT = "%amount%";
+  private static final String PH_LOC = "%loc%";
+  private static final String PH_CMD = "%cmd%";
+  private static final String PH_PLAYER = "%player% ";
+  private static final String PH_TYPE = "%type%";
+  private static final String PH_TIER = "%tier%";
+  private static final String PH_REMAIN = "%remain%";
+  private static final String PH_ETIME = "%e_time%";
+  private static final String PH_TIME = "%time%";
 
   // Plugin info ping messages.
   private static final String VERSION = "SpaceFlares v%version% loaded.";
@@ -58,12 +86,12 @@ public class Messages {
   private static final String HELP_HELP_P = "spaceflares.help: Ability to use /%cmd% help command.";
   private static final String HELP_REDEEM_P = "spaceflares.redeem: Ability to use /%cmd% redeem command.";
   private static final String HELP_GIVE_P = "spaceflares.give: Ability to use /%cmd% give command.";
-  private static final String HELP_SUMMON_P = "spaceflares.summon: Ability to use /spaceflares summon command.";
-  private static final String HELP_LIST_P = "spaceflares.list: Ability to use /envoy list command.";
-  private static final String HELP_START_P = "spaceflares.start: Ability to use /envoy start command.";
-  private static final String HELP_STOP_P = "spaceflares.stop: Ability to use /envoy stop command.";
-  private static final String HELP_QUERY_P = "spaceflares.query: Ability to use /envoy query commands.";
-  private static final String HELP_EDIT_P = "spaceflares.edit: Ability to use /envoy edit commands.";
+  private static final String HELP_FLARE_SUMMON_P = "spaceflares.summon: Ability to use /spaceflares summon command.";
+  private static final String HELP_ENVOY_LIST_P = "spaceflares.list: Ability to use /envoy list command.";
+  private static final String HELP_ENVOY_START_P = "spaceflares.start: Ability to use /envoy start command.";
+  private static final String HELP_ENVOY_STOP_P = "spaceflares.stop: Ability to use /envoy stop command.";
+  private static final String HELP_ENVOY_QUERY_P = "spaceflares.query: Ability to use /envoy query commands.";
+  private static final String HELP_ENVOY_EDIT_P = "spaceflares.edit: Ability to use /envoy edit commands.";
   private static final String HELP_RELOAD_P = "spaceflares.reload: Ability to use reload command.";
   private static final String HELP_FOOTER = "&b&l======================================";
   private static final String RELOAD_SUCCESS = "&aReload successful!";
@@ -173,29 +201,26 @@ public class Messages {
 
   /**
    * Sends plugin version info to specified player.
-   *
    * @param player Player to send plugin version info to.
    * @param plugin Plugin to get version info for.
    */
   public static void sendPluginVersion(Player player, Plugin plugin) {
-    String message = prefix + VERSION.replaceAll("%version%", plugin.getDescription().getVersion());
+    String message = prefix + VERSION.replace(PH_VERSION, plugin.getDescription().getVersion());
     player.sendMessage(applyColor(message));
   }
 
   /**
    * Sends plugin integration enabled status to specified player.
-   *
-   * @param player          Player to send plugin integration enabled status to.
+   * @param player Player to send plugin integration enabled status to.
    * @param integrationName Name of plugin that has integration enabled.
    */
   public static void sendIntegrationEnabled(Player player, String integrationName) {
-    String message = prefix + INTEGRATION.replaceAll("%integration%", integrationName);
+    String message = prefix + INTEGRATION.replace(PH_INTEGRATION, integrationName);
     player.sendMessage(applyColor(message));
   }
 
   /**
    * Sends config error message to specified player.
-   *
    * @param player Player to send config error message to.
    */
   public static void sendConfigError(Player player) {
@@ -206,178 +231,210 @@ public class Messages {
    * Logging message during setup sent if config folder exists.
    */
   protected static void printFolderExists(String folder) {
-    System.out.println(applyColor(prefix + folder + EXISTS));
+    logger.log(Level.INFO, applyColor(prefix + folder + EXISTS));
   }
 
   /**
    * Logging message during setup sent if config folder does not exist.
    */
   protected static void printFolderNotExists(String folder) {
-    System.out.println(applyColor(prefix + folder + NOT_EXISTS));
+    logger.log(Level.INFO, applyColor(prefix + folder + NOT_EXISTS));
   }
 
   /**
    * Logging message during setup sent if specified file exists in config folder.
-   *
    * @param filename Filename of specified file.
    */
   protected static void printFileExists(String filename) {
-    System.out.println(applyColor(prefix + filename + EXISTS));
+    logger.log(Level.INFO, applyColor(prefix + filename + EXISTS));
   }
 
   /**
    * Logging message during setup sent if specified file does not exist in config folder.
-   *
    * @param filename Filename of specified file.
    */
   protected static void printFileNotExists(String filename) {
-    System.out.println(applyColor(prefix + filename + NOT_EXISTS));
+    logger.log(Level.INFO, applyColor(prefix + filename + NOT_EXISTS));
   }
 
   /**
    * Logging message during setup sent if specified file could not be copied to config folder.
-   *
    * @param filename Filename of specified file.
    */
   protected static void printFileCopyError(String filename) {
-    String message = prefix + COPY_ERROR.replaceAll("%file%", filename);
-    System.out.println(applyColor(message));
+    String message = prefix + COPY_ERROR.replace(PH_FILE, filename);
+    logger.log(Level.WARNING, applyColor(message));
   }
 
   /**
    * Logging message during setup sent if config files contain errors and could not load properly.
    */
   public static void printConfigError(Exception exception) {
-    System.out.println(applyColor(prefix + CONFIG_ERROR));
-    System.out.println(applyColor(prefix + exception.getMessage()));
+    logger.log(Level.WARNING, applyColor(prefix + CONFIG_ERROR));
+    logger.log(Level.WARNING, applyColor(prefix + exception.getMessage()));
   }
 
   /**
    * Logging message during shutdown sent if specified file could not be saved.
-   *
    * @param filename Filename of specified file.
    */
   public static void printSaveError(String filename) {
-    String message = prefix + SAVE_ERROR.replaceAll("%file%", filename);
-    System.out.println(applyColor(message));
+    String message = prefix + SAVE_ERROR.replace(PH_FILE, filename);
+    logger.log(Level.WARNING, applyColor(message));
   }
 
   /**
    * Logging message during setup sent if specified file is validated successfully.
-   *
    * @param configType Configuration file type that was validated successfully.
    */
   public static void printValidationSuccess(ConfigTypeEnum configType) {
-    String message = prefix + VALIDATION_SUCCESS.replaceAll("%file%", configType.toString());
-    System.out.println(applyColor(message));
+    String message = prefix + VALIDATION_SUCCESS.replace(PH_FILE, configType.toString());
+    logger.log(Level.INFO, applyColor(message));
   }
 
   /**
    * Logging message during setup sent if specified file is validated successfully.
-   *
    * @param configName Configuration file name that was validated successfully.
    */
   public static void printValidationSuccess(String configName) {
-    String message = prefix + VALIDATION_SUCCESS.replaceAll("%file%", configName);
-    System.out.println(applyColor(message));
+    String message = prefix + VALIDATION_SUCCESS.replace(PH_FILE, configName);
+    logger.log(Level.INFO, applyColor(message));
   }
 
   /**
    * Logging message during reloading sent if specified file is reloaded successfully.
-   *
    * @param configType Configuration file type that was reloaded successfully.
    */
   public static void printReloaded(ConfigTypeEnum configType) {
-    String message = prefix + RELOAD.replaceAll("%file%", configType.toString());
-    System.out.println(applyColor(message));
+    String message = prefix + RELOAD.replace(PH_FILE, configType.toString());
+    logger.log(Level.INFO, applyColor(message));
   }
 
   /**
    * Send commands help message to command sender.
-   *
    * @param sender Command sender to send commands help message to.
+   * @param isFlareCommand Whether or not the help message originates from a flare command.
    */
   public static void sendHelp(CommandSender sender, boolean isFlareCommand) {
     String command = isFlareCommand ? "spaceflares" : "envoy";
-    String type = isFlareCommand ? "flare" : "envoy";
     sender.sendMessage(applyColor(HELP_HEADER));
+    sendHelpCommandList(sender, isFlareCommand);
+    sendHelpAllCommands(sender, command, isFlareCommand);
+    sendHelpCommandPermissions(sender, command, isFlareCommand);
+    sender.sendMessage(applyColor(HELP_FOOTER));
+  }
+
+  private static void sendHelpCommandList(CommandSender sender, boolean isFlareCommand) {
     if (isFlareCommand) {
-      sender.sendMessage(applyColor((HELP_ENVOY)));
-    } else {
       sender.sendMessage(applyColor((HELP_FLARE)));
-    }
-    sender.sendMessage(applyColor(HELP_COMMANDS));
-    if (isFlareCommand) {
+      sender.sendMessage(applyColor(HELP_COMMANDS));
       sender.sendMessage(applyColor(HELP_FLARE_ALIASES));
     } else {
+      sender.sendMessage(applyColor((HELP_ENVOY)));
+      sender.sendMessage(applyColor(HELP_COMMANDS));
       sender.sendMessage(applyColor((HELP_ENVOY_ALIASES)));
     }
-    if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.HELP)) {
-      sender.sendMessage(applyColor(replaceCmdType(HELP_HELP, command, type)));
+  }
+
+  private static void sendHelpAllCommands(CommandSender sender, String command, boolean isFlareCommand) {
+    String type = isFlareCommand ? "flare" : "envoy";
+    sendHelpHelpCommand(sender, command, type);
+    sendHelpRedeemCommand(sender, command, type);
+    sendHelpGiveCommand(sender, command, type);
+    if (isFlareCommand) sendHelpFlareSummonCommand(sender);
+    if (!isFlareCommand) sendHelpAllEnvoyCommands(sender);
+    sendHelpReloadCommand(sender);
+  }
+
+  private static void sendHelpHelpCommand(CommandSender sender, String command, String type) {
+    if (!CommandManager.hasCommandPermissions(sender, CommandTypeEnum.HELP)) return;
+    sender.sendMessage(applyColor(replaceCmdType(HELP_HELP, command, type)));
+  }
+
+  private static void sendHelpRedeemCommand(CommandSender sender, String command, String type) {
+    if (!(sender instanceof Player) || !CommandManager.hasCommandPermissions(sender, CommandTypeEnum.REDEEM)) return;
+    sender.sendMessage(applyColor(replaceCmdType(HELP_REDEEM, command, type)));
+  }
+
+  private static void sendHelpGiveCommand(CommandSender sender, String command, String type) {
+    if (!CommandManager.hasCommandPermissions(sender, CommandTypeEnum.GIVE)) return;
+    sender.sendMessage(applyColor(replaceCmdType(HELP_GIVE1, command, type)));
+    sender.sendMessage(applyColor(replaceCmdType(HELP_GIVE2, command, type)));
+    if (sender instanceof Player) {
+      sender.sendMessage(applyColor(replaceCmdType(HELP_GIVE3, command, type)));
+      sender.sendMessage(applyColor(replaceCmdType(HELP_GIVE4, command, type)));
     }
-    if (sender instanceof Player && CommandManager.hasCommandPermissions(sender,
-        CommandTypeEnum.REDEEM)) {
-      sender.sendMessage(applyColor(replaceCmdType(HELP_REDEEM, command, type)));
-    }
-    if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.GIVE)) {
-      sender.sendMessage(applyColor(replaceCmdType(HELP_GIVE1, command, type)));
-      sender.sendMessage(applyColor(replaceCmdType(HELP_GIVE2, command, type)));
-      if (sender instanceof Player) {
-        sender.sendMessage(applyColor(replaceCmdType(HELP_GIVE3, command, type)));
-        sender.sendMessage(applyColor(replaceCmdType(HELP_GIVE4, command, type)));
-      }
-    }
-    if (isFlareCommand && CommandManager.hasCommandPermissions(sender, CommandTypeEnum.SUMMON)) {
-      sender.sendMessage(applyColor(HELP_FLARE_SUMMON1));
-      if (sender instanceof Player) {
-        sender.sendMessage(applyColor(HELP_FLARE_SUMMON2));
-        sender.sendMessage(applyColor(HELP_FLARE_SUMMON3));
-        sender.sendMessage(applyColor(HELP_FLARE_SUMMON4));
-        sender.sendMessage(applyColor(HELP_FLARE_SUMMON5));
-      }
-    }
-    if (!isFlareCommand) {
-      if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.LIST)) {
-        sender.sendMessage(applyColor(HELP_ENVOY_LIST));
-      }
-      if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.START)) {
-        sender.sendMessage(applyColor(HELP_ENVOY_START));
-      }
-      if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.STOP)) {
-        sender.sendMessage(applyColor(HELP_ENVOY_STOP));
-      }
-      if (sender instanceof Player &&
-          CommandManager.hasCommandPermissions(sender, CommandTypeEnum.EDIT)) {
-        sender.sendMessage(applyColor(HELP_ENVOY_EDIT));
-      }
-    }
-    if (CommandManager.hasCommandPermissions(sender, CommandTypeEnum.RELOAD)) {
-      sender.sendMessage(applyColor(HELP_RELOAD));
-    }
-    if (CommandManager.hasAdminPermissions(sender)) {
-      sender.sendMessage(applyColor(HELP_PERMISSIONS));
-      sender.sendMessage(applyColor(HELP_WILDCARD_P));
-      sender.sendMessage(applyColor(HELP_ADMIN_P));
-      sender.sendMessage(applyColor(replaceCmd(HELP_HELP_P, command)));
-      sender.sendMessage(applyColor(replaceCmd(HELP_REDEEM_P, command)));
-      sender.sendMessage(applyColor(replaceCmd(HELP_GIVE_P, command)));
-      if (isFlareCommand) {
-        sender.sendMessage(applyColor(HELP_SUMMON_P));
-      } else {
-        sender.sendMessage(applyColor(HELP_LIST_P));
-        sender.sendMessage(applyColor(HELP_START_P));
-        sender.sendMessage(applyColor(HELP_STOP_P));
-        sender.sendMessage(applyColor(HELP_EDIT_P));
-        sender.sendMessage(applyColor(HELP_QUERY_P));
-      }
-      sender.sendMessage(applyColor(HELP_RELOAD_P));
-    }
-    sender.sendMessage(applyColor(HELP_FOOTER));
+  }
+
+  private static void sendHelpFlareSummonCommand(CommandSender sender) {
+    if (!CommandManager.hasCommandPermissions(sender, CommandTypeEnum.SUMMON)) return;
+    sender.sendMessage(applyColor(HELP_FLARE_SUMMON1));
+    if (!(sender instanceof Player)) return;
+    sender.sendMessage(applyColor(HELP_FLARE_SUMMON2));
+    sender.sendMessage(applyColor(HELP_FLARE_SUMMON3));
+    sender.sendMessage(applyColor(HELP_FLARE_SUMMON4));
+    sender.sendMessage(applyColor(HELP_FLARE_SUMMON5));
+  }
+
+  private static void sendHelpAllEnvoyCommands(CommandSender sender) {
+    sendHelpEnvoyListCommand(sender);
+    sendHelpEnvoyStartCommand(sender);
+    sendHelpEnvoyStopCommand(sender);
+    sendHelpEnvoyEditCommand(sender);
+  }
+
+  private static void sendHelpEnvoyListCommand(CommandSender sender) {
+    if (!CommandManager.hasCommandPermissions(sender, CommandTypeEnum.LIST)) return;
+    sender.sendMessage(applyColor(HELP_ENVOY_LIST));
+  }
+
+  private static void sendHelpEnvoyStartCommand(CommandSender sender) {
+    if (!CommandManager.hasCommandPermissions(sender, CommandTypeEnum.START)) return;
+    sender.sendMessage(applyColor(HELP_ENVOY_START));
+  }
+
+  private static void sendHelpEnvoyStopCommand(CommandSender sender) {
+    if (!CommandManager.hasCommandPermissions(sender, CommandTypeEnum.STOP)) return;
+    sender.sendMessage(applyColor(HELP_ENVOY_STOP));
+  }
+
+  private static void sendHelpEnvoyEditCommand(CommandSender sender) {
+    if (!(sender instanceof Player) || !CommandManager.hasCommandPermissions(sender, CommandTypeEnum.EDIT)) return;
+    sender.sendMessage(applyColor(HELP_ENVOY_EDIT));
+  }
+
+  private static void sendHelpReloadCommand(CommandSender sender) {
+    if (!CommandManager.hasCommandPermissions(sender, CommandTypeEnum.RELOAD)) return;
+    sender.sendMessage(applyColor(HELP_RELOAD));
+  }
+
+  private static void sendHelpCommandPermissions(CommandSender sender, String command, boolean isFlareCommand) {
+    if (!CommandManager.hasAdminPermissions(sender)) return;
+    sender.sendMessage(applyColor(HELP_PERMISSIONS));
+    sender.sendMessage(applyColor(HELP_WILDCARD_P));
+    sender.sendMessage(applyColor(HELP_ADMIN_P));
+    sender.sendMessage(applyColor(replaceCmd(HELP_HELP_P, command)));
+    sender.sendMessage(applyColor(replaceCmd(HELP_REDEEM_P, command)));
+    sender.sendMessage(applyColor(replaceCmd(HELP_GIVE_P, command)));
+    if (isFlareCommand) sendHelpFlareCommandPermissions(sender);
+    if (!isFlareCommand) sendHelpEnvoyCommandPermissions(sender);
+    sender.sendMessage(applyColor(HELP_RELOAD_P));
+  }
+
+  private static void sendHelpFlareCommandPermissions(CommandSender sender) {
+    sender.sendMessage(applyColor(HELP_FLARE_SUMMON_P));
+  }
+
+  private static void sendHelpEnvoyCommandPermissions(CommandSender sender) {
+    sender.sendMessage(applyColor(HELP_ENVOY_LIST_P));
+    sender.sendMessage(applyColor(HELP_ENVOY_START_P));
+    sender.sendMessage(applyColor(HELP_ENVOY_STOP_P));
+    sender.sendMessage(applyColor(HELP_ENVOY_EDIT_P));
+    sender.sendMessage(applyColor(HELP_ENVOY_QUERY_P));
   }
 
   /**
    * Send config reloaded message to command sender.
-   *
    * @param sender CommandSender to send reloaded message to.
    */
   public static void sendReloadSuccess(CommandSender sender) {
@@ -386,7 +443,6 @@ public class Messages {
 
   /**
    * Send no permission message to command sender.
-   *
    * @param sender CommandSender to send no permission message to.
    */
   public static void sendNoPermission(CommandSender sender) {
@@ -395,47 +451,43 @@ public class Messages {
 
   /**
    * Gets location placeholder value for specified location.
-   *
    * @param loc Location to get placeholder value for.
    * @return Location placeholder value.
    */
   private static String getLocation(Location loc) {
-    String message = locP.replaceAll("%world%", Objects.requireNonNull(loc.getWorld()).getName());
-    message = message.replaceAll("%x%", String.valueOf((int) loc.getX()));
-    message = message.replaceAll("%y%", String.valueOf((int) loc.getY()));
-    return message.replaceAll("%z%", String.valueOf((int) loc.getZ()));
+    String message = locP.replace(PH_WORLD, Objects.requireNonNull(loc.getWorld()).getName());
+    message = message.replace(PH_X, String.valueOf((int) loc.getX()));
+    message = message.replace(PH_Y, String.valueOf((int) loc.getY()));
+    return message.replace(PH_Z, String.valueOf((int) loc.getZ()));
   }
 
   /**
    * Gets player name placeholder value for specified player.
-   *
    * @param player Player username to get placeholder value for.
    * @return Player name placeholder value.
    */
   private static String getPlayerName(Player player) {
-    String message = playerP.replaceAll("%username%", player.getName());
-    return message.replaceAll("%displayname%", player.getDisplayName());
+    String message = playerP.replace(PH_USERNAME, player.getName());
+    return message.replace(PH_DISPLAYNAME, player.getDisplayName());
   }
 
   /**
    * Gets e_time placeholder value for specified time.
-   *
    * @param time List of integers corresponding to e_time value.
    * @return E_time placeholder value.
    */
   private static String getETime(List<Integer> time) {
-    String message = eTimeP.replaceAll("%day%", String.valueOf(time.get(0)));
-    message = message.replaceAll("%hour%", String.valueOf(time.get(1)));
-    message = message.replaceAll("%min%", String.valueOf(time.get(2)));
-    return message.replaceAll("%sec%", String.valueOf(time.get(3)));
+    String message = eTimeP.replace(PH_DAY, String.valueOf(time.get(0)));
+    message = message.replace(PH_HOUR, String.valueOf(time.get(1)));
+    message = message.replace(PH_MIN, String.valueOf(time.get(2)));
+    return message.replace(PH_SEC, String.valueOf(time.get(3)));
   }
 
   /**
    * Sends confirmation message for when flare give command is successfully used.
-   *
    * @param sender CommandSender to send confirmation message to.
    * @param player Player who was successfully given flares.
-   * @param tier   Tier of flares given to player.
+   * @param tier Tier of flares given to player.
    * @param amount Amount of flares given to player.
    */
   public static void sendGive(CommandSender sender, Player player, String tier, int amount) {
@@ -445,7 +497,6 @@ public class Messages {
 
   /**
    * Sends message for when flares are sent to redeems because inventory is full.
-   *
    * @param sender CommandSender to send message to.
    * @param player Player who was successfully given flares.
    * @param amount Amount of flares sent to redeems inventory.
@@ -457,9 +508,8 @@ public class Messages {
 
   /**
    * Sends confirmation message for when flares are successfully received by player.
-   *
    * @param player Player to send confirmation message to.
-   * @param tier   Tier of flares given to player.
+   * @param tier Tier of flares given to player.
    * @param amount Amount of flares given to player.
    */
   public static void sendReceive(Player player, String tier, int amount) {
@@ -469,18 +519,16 @@ public class Messages {
 
   /**
    * Sends message for when flares are sent to redeems because inventory is full.
-   *
    * @param player Player to send message to.
    * @param amount Amount of flares sent to redeems inventory.
    */
   public static void sendReceiveFull(Player player, int amount) {
-    String message = receiveFull.replaceAll("%amount%", String.valueOf(amount));
+    String message = receiveFull.replace(PH_AMOUNT, String.valueOf(amount));
     player.sendMessage(applyColor(message));
   }
 
   /**
    * Sends message for when player is in the wrong region and cannot start flares.
-   *
    * @param player Player to send invalid region message to.
    */
   public static void sendNoSummon(Player player) {
@@ -489,10 +537,9 @@ public class Messages {
 
   /**
    * Sends confirmation message for when specified player summons a flare.
-   *
    * @param player Player to send confirmation message to.
-   * @param tier   Tier of flare summoned.
-   * @param loc    Location where flare is summoned.
+   * @param tier Tier of flare summoned.
+   * @param loc Location where flare is summoned.
    */
   public static void sendSummon(Player player, String tier, Location loc) {
     for (String line : summon) {
@@ -503,10 +550,9 @@ public class Messages {
 
   /**
    * Sends announcement message for when a player summons a flare.
-   *
    * @param player Player who summoned the flare.
-   * @param tier   Tier of flare summoned.
-   * @param loc    Location where flare is summoned.
+   * @param tier Tier of flare summoned.
+   * @param loc Location where flare is summoned.
    */
   public static void sendSummonAll(Player player, String tier, Location loc) {
     //noinspection DuplicatedCode
@@ -527,10 +573,9 @@ public class Messages {
 
   /**
    * Sends confirmation message for when specified player's summoned flare lands.
-   *
    * @param player Player to send confirmation message to.
-   * @param tier   Tier of flare summoned.
-   * @param loc    Location where flare has landed.
+   * @param tier Tier of flare summoned.
+   * @param loc Location where flare has landed.
    */
   public static void sendLand(Player player, String tier, Location loc) {
     for (String line : land) {
@@ -542,10 +587,9 @@ public class Messages {
 
   /**
    * Sends announcement message for when a player's summoned flare lands.
-   *
    * @param player Player who summoned the flare.
-   * @param tier   Tier of flare summoned.
-   * @param loc    Location where flare has landed.
+   * @param tier Tier of flare summoned.
+   * @param loc Location where flare has landed.
    */
   public static void sendLandAll(Player player, String tier, Location loc) {
     if (!FlareConfig.getFlareDoAnnounce(tier)) {
@@ -566,10 +610,9 @@ public class Messages {
 
   /**
    * Sends confirmation message for when specified player claims a crate.
-   *
    * @param player Player who claimed the crate.
-   * @param tier   Tier of crate claimed.
-   * @param loc    Location where crate was claimed.
+   * @param tier Tier of crate claimed.
+   * @param loc Location where crate was claimed.
    */
   public static void sendClaim(Player player, String tier, Location loc) {
     for (String line : claim) {
@@ -580,10 +623,9 @@ public class Messages {
 
   /**
    * Sends announcement message for when a player claims a crate.
-   *
    * @param player Player who claimed the crate.
-   * @param tier   Tier of crate claimed.
-   * @param loc    Location where crate was claimed.
+   * @param tier Tier of crate claimed.
+   * @param loc Location where crate was claimed.
    */
   public static void sendClaimAll(Player player, String tier, Location loc) {
     //noinspection DuplicatedCode
@@ -604,10 +646,9 @@ public class Messages {
 
   /**
    * Sends confirmation message for when specified player's landed crate despawns.
-   *
    * @param player Player whose crate despawned.
-   * @param tier   Tier of crate despawned.
-   * @param loc    Location where crate despawned.
+   * @param tier Tier of crate despawned.
+   * @param loc Location where crate despawned.
    */
   public static void sendDespawnNotify(Player player, String tier, Location loc) {
     String message = replaceTierLoc(despawnNotify, tier, loc);
@@ -619,10 +660,9 @@ public class Messages {
 
   /**
    * Sends announcement message for when a player's landed crate despawns.
-   *
    * @param player Player whose crate despawned.
-   * @param tier   Tier of crate despawned.
-   * @param loc    Location where crate despawned.
+   * @param tier Tier of crate despawned.
+   * @param loc Location where crate despawned.
    */
   public static void sendDespawnAll(Player player, String tier, Location loc) {
     if (!FlareConfig.getFlareDoAnnounce(tier)) {
@@ -642,9 +682,8 @@ public class Messages {
 
   /**
    * Sends confirmation message for when player redeems flares.
-   *
    * @param player Player who redeemed flares.
-   * @param tier   Tier of flares redeemed.
+   * @param tier Tier of flares redeemed.
    * @param amount Amount of flares redeemed.
    */
   public static void sendRedeem(Player player, String tier, int amount) {
@@ -654,7 +693,6 @@ public class Messages {
 
   /**
    * Sends message for when player tries to redeem flares with a full inventory.
-   *
    * @param player Player who redeemed flares with a full inventory.
    */
   public static void sendRedeemFull(Player player) {
@@ -663,7 +701,6 @@ public class Messages {
 
   /**
    * Sends message for when CommandSender tries to start an active envoy.
-   *
    * @param sender CommandSender who tries to start an active envoy.
    */
   public static void sendEnvoyNoSummon(CommandSender sender) {
@@ -672,14 +709,12 @@ public class Messages {
 
   /**
    * Sends message for when player summons an envoy.
-   *
    * @param sender CommandSender who summoned the envoy.
-   * @param tier   Tier of envoy summoned.
+   * @param tier Tier of envoy summoned.
    * @param remain Number of chests in envoy summoned.
-   * @param time   Duration of envoy summoned.
+   * @param time Duration of envoy summoned.
    */
-  public static void sendEnvoySummon(CommandSender sender, String tier, int remain,
-      List<Integer> time) {
+  public static void sendEnvoySummon(CommandSender sender, String tier, int remain, List<Integer> time) {
     if (sender == null) {
       return;
     }
@@ -692,11 +727,10 @@ public class Messages {
   /**
    * Sends message for when envoy starts.
    * <p>Sends to all players if no player summoned the envoy.</p>
-   *
    * @param player Player who summoned the envoy.
-   * @param tier   Tier of envoy started.
+   * @param tier Tier of envoy started.
    * @param remain Number of chests in envoy started.
-   * @param time   Duration of envoy started.
+   * @param time Duration of envoy started.
    */
   public static void sendEnvoyStart(Player player, String tier, int remain, List<Integer> time) {
     if (!EnvoyConfig.getEnvoyDoAnnounce(tier)) {
@@ -716,9 +750,8 @@ public class Messages {
 
   /**
    * Sends message for when player claims an envoy crate.
-   *
    * @param player Player who claimed envoy crate.
-   * @param tier   Tier of envoy crate claimed.
+   * @param tier Tier of envoy crate claimed.
    * @param remain Number of crates remaining in the envoy.
    */
   public static void sendEnvoyClaim(Player player, String tier, int remain) {
@@ -728,15 +761,13 @@ public class Messages {
 
   /**
    * Sends message to all players for when a player claims an envoy crate.
-   *
    * @param player Player who claimed envoy crate.
-   * @param envoy  Envoy to announce claim for.
-   * @param tier   Tier of envoy crate claimed.
+   * @param envoy Envoy to announce claim for.
+   * @param tier Tier of envoy crate claimed.
    * @param remain Number of crates remaining in the envoy.
-   * @param loc    Location of crate claimed.
+   * @param loc Location of crate claimed.
    */
-  public static void sendEnvoyClaimAll(Player player, String envoy, String tier, int remain,
-      Location loc) {
+  public static void sendEnvoyClaimAll(Player player, String envoy, String tier, int remain, Location loc) {
     if (!EnvoyConfig.getEnvoyDoAnnounce(envoy)) {
       return;
     }
@@ -752,8 +783,7 @@ public class Messages {
 
   /**
    * Sends message to all players for when an envoy has ended.
-   *
-   * @param tier     Tier of envoy that ended.
+   * @param tier Tier of envoy that ended.
    * @param cooldown Cooldown to next envoy of specified type.
    */
   public static void sendEnvoyEnd(String tier, List<Integer> cooldown) {
@@ -769,7 +799,6 @@ public class Messages {
 
   /**
    * Sends message for when CommandSender tries to stop a stopped envoy.
-   *
    * @param sender CommandSender who tried to end a stopped envoy.
    */
   public static void sendEnvoyNoEnd(CommandSender sender) {
@@ -778,9 +807,8 @@ public class Messages {
 
   /**
    * Sends message to CommandSender who queries envoy status during the envoy.
-   *
-   * @param sender   CommandSender that sent query command.
-   * @param remain   Number of crates remaining in envoy.
+   * @param sender CommandSender that sent query command.
+   * @param remain Number of crates remaining in envoy.
    * @param duration Duration remaining in the envoy.
    */
   public static void sendEnvoyRemain(CommandSender sender, int remain, List<Integer> duration) {
@@ -790,9 +818,8 @@ public class Messages {
 
   /**
    * Sends message to CommandSender who queries envoy status during envoy downtime.
-   *
-   * @param sender   CommandSender who sent query command.
-   * @param tier     Tier of envoy queried.
+   * @param sender CommandSender who sent query command.
+   * @param tier Tier of envoy queried.
    * @param cooldown Cooldown to next envoy of speicified type.
    */
   public static void sendEnvoyCooldown(CommandSender sender, String tier, List<Integer> cooldown) {
@@ -803,9 +830,8 @@ public class Messages {
   /**
    * Sends message to CommandSender who queries envoy status for a non-cooldown envoy during
    * downtime.
-   *
    * @param sender CommandSender who sent query command.
-   * @param tier   Tier of envoy queried.
+   * @param tier Tier of envoy queried.
    */
   public static void sendEnvoyNoCooldown(CommandSender sender, String tier) {
     String message = replaceEnvoyTier(envoyNoCooldown, tier);
@@ -814,7 +840,6 @@ public class Messages {
 
   /**
    * Sends message to CommandSender who queries envoy status for an envoy that doesn't exist.
-   *
    * @param sender CommandSender who sent query command.
    */
   public static void sendEnvoyNoExist(CommandSender sender) {
@@ -823,7 +848,6 @@ public class Messages {
 
   /**
    * Sends message to CommandSender who queries a list of all envoys.
-   *
    * @param sender CommandSender who sent list command.
    */
   public static void sendEnvoyList(CommandSender sender) {
@@ -833,10 +857,9 @@ public class Messages {
 
   /**
    * Sends confirmation message for when envoy flare give command is successfully used.
-   *
    * @param sender CommandSender to send confirmation message to.
    * @param player Player who was successfully given envoy flares.
-   * @param tier   Tier of envoy flares given to player.
+   * @param tier Tier of envoy flares given to player.
    * @param amount Amount of envoy flares given to player.
    */
   public static void sendEnvoyGive(CommandSender sender, Player player, String tier, int amount) {
@@ -846,7 +869,6 @@ public class Messages {
 
   /**
    * Sends message for when flares are sent to redeems because inventory is full.
-   *
    * @param sender CommandSender to send message to.
    * @param player Player who was successfully given flares.
    * @param amount Amount of flares sent to redeems inventory.
@@ -858,9 +880,8 @@ public class Messages {
 
   /**
    * Sends confirmation message for when flares are successfully received by player.
-   *
    * @param player Player to send confirmation message to.
-   * @param tier   Tier of flares given to player.
+   * @param tier Tier of flares given to player.
    * @param amount Amount of flares given to player.
    */
   public static void sendEnvoyReceive(Player player, String tier, int amount) {
@@ -870,20 +891,18 @@ public class Messages {
 
   /**
    * Sends message for when flares are sent to redeems because inventory is full.
-   *
    * @param player Player to send message to.
    * @param amount Amount of flares sent to redeems inventory.
    */
   public static void sendEnvoyReceiveFull(Player player, int amount) {
-    String message = envoyReceiveFull.replaceAll("%amount%", String.valueOf(amount));
+    String message = envoyReceiveFull.replace(PH_AMOUNT, String.valueOf(amount));
     player.sendMessage(applyColor(message));
   }
 
   /**
    * Sends confirmation message for when player redeems envoy flares.
-   *
    * @param player Player who redeemed envoy flares.
-   * @param tier   Tier of envoy flares redeemed.
+   * @param tier Tier of envoy flares redeemed.
    * @param amount Amount of envoy flares redeemed.
    */
   public static void sendEnvoyRedeem(Player player, String tier, int amount) {
@@ -893,7 +912,6 @@ public class Messages {
 
   /**
    * Sends message for when player tries to edit a different envoy while editing an envoy.
-   *
    * @param player Player who tries to edit multiple envoys
    */
   public static void sendEnvoyEditEditing(Player player) {
@@ -902,9 +920,8 @@ public class Messages {
 
   /**
    * Sends confirmation message for when player starts editing an envoy.
-   *
    * @param player Player who started editing envoy.
-   * @param tier   Type of envoy being edited.
+   * @param tier Type of envoy being edited.
    */
   public static void sendEnvoyEditStart(Player player, String tier) {
     String message = replaceEnvoyTier(envoyEditStart, tier);
@@ -913,9 +930,8 @@ public class Messages {
 
   /**
    * Sends confirmation message for when player stops editing an envoy.
-   *
    * @param player Player who stopped editing envoy.
-   * @param tier   Tier of envoy that player stopped editing.
+   * @param tier Tier of envoy that player stopped editing.
    */
   public static void sendEnvoyEditStop(Player player, String tier) {
     String message = replaceEnvoyTier(envoyEditStop, tier);
@@ -924,7 +940,6 @@ public class Messages {
 
   /**
    * Sends confirmation message for when player successfully adds a new location to envoy.
-   *
    * @param player Player who added new location to envoy.
    */
   public static void sendEnvoyEditSave(Player player) {
@@ -933,18 +948,16 @@ public class Messages {
 
   /**
    * Sends message for when player tries to save an envoy location that isn't an air block.
-   *
-   * @param player   Player who tried to save location.
+   * @param player Player who tried to save location.
    * @param location Location that is not an air block.
    */
   public static void sendEnvoyEditNotAir(Player player, Location location) {
-    String message = envoyEditNotAir.replaceAll("%loc%", getLocation(location));
+    String message = envoyEditNotAir.replace(PH_LOC, getLocation(location));
     player.sendMessage(applyColor(message));
   }
 
   /**
    * Sends message for when envoy location could not be saved.
-   *
    * @param player Player to send message to.
    */
   public static void sendEnvoyEditNoSave(Player player) {
@@ -953,7 +966,6 @@ public class Messages {
 
   /**
    * Sends confirmation message for when player successfully deletes a location from the envoy.
-   *
    * @param player Player who deleted location from envoy.
    */
   public static void sendEnvoyEditDelete(Player player) {
@@ -961,120 +973,119 @@ public class Messages {
   }
 
   private static String replaceCmd(String line, String cmd) {
-    return line.replaceAll("%cmd%", cmd);
+    return line.replace(PH_CMD, cmd);
   }
 
   private static String replaceLoc(String line, Location loc) {
-    return line.replaceAll("%loc%", getLocation(loc));
+    return line.replace(PH_LOC, getLocation(loc));
   }
 
   public static String replacePlayer(String line, Player player) {
-    return line.replaceAll("%player%", getPlayerName(player));
+    return line.replace(PH_PLAYER, getPlayerName(player));
   }
 
   private static String replaceCmdType(String line, String cmd, String type) {
     String message = replaceCmd(line, cmd);
-    return message.replaceAll("%type%", type);
+    return message.replace(PH_TYPE, type);
   }
 
   public static String replaceEnvoyTier(String line, String tier) {
-    return line.replaceAll("%tier%", EnvoyConfig.getEnvoyName(tier));
+    return line.replace(PH_TIER, EnvoyConfig.getEnvoyName(tier));
   }
 
   private static String replaceTierLoc(String line, String tier, Location loc) {
-    String message = line.replaceAll("%tier%", FlareConfig.getFlareTier(tier));
-    return message.replaceAll("%loc%", getLocation(loc));
+    String message = line.replace(PH_TIER, FlareConfig.getFlareTier(tier));
+    return message.replace(PH_LOC, getLocation(loc));
   }
 
   private static String replaceTierAmount(String line, String tier, int amount) {
-    String message = line.replaceAll("%tier%", FlareConfig.getFlareTier(tier));
-    return message.replaceAll("%amount%", String.valueOf(amount));
+    String message = line.replace(PH_TIER, FlareConfig.getFlareTier(tier));
+    return message.replace(PH_AMOUNT, String.valueOf(amount));
   }
 
   private static String replaceTierRemain(String line, String tier, int remain) {
-    String message = line.replaceAll("%tier%", FlareConfig.getFlareTier(tier));
-    return message.replaceAll("%remain%", String.valueOf(remain));
+    String message = line.replace(PH_TIER, FlareConfig.getFlareTier(tier));
+    return message.replace(PH_REMAIN, String.valueOf(remain));
   }
 
   private static String replacePlayerAmount(String line, Player player, int amount) {
-    String message = line.replaceAll("%player%", getPlayerName(player));
-    return message.replaceAll("%amount%", String.valueOf(amount));
+    String message = line.replace(PH_PLAYER, getPlayerName(player));
+    return message.replace(PH_AMOUNT, String.valueOf(amount));
   }
 
   private static String replaceRemainETime(String line, int remain, List<Integer> etime) {
-    String message = line.replaceAll("%remain%", String.valueOf(remain));
-    return message.replaceAll("%e_time%", getETime(etime));
+    String message = line.replace(PH_REMAIN, String.valueOf(remain));
+    return message.replace(PH_ETIME, getETime(etime));
   }
 
   private static String replaceEnvoyTierAmount(String line, String tier, int amount) {
-    String message = line.replaceAll("%tier%", EnvoyConfig.getEnvoyName(tier));
-    return message.replaceAll("%amount%", String.valueOf(amount));
+    String message = line.replace(PH_TIER, EnvoyConfig.getEnvoyName(tier));
+    return message.replace(PH_AMOUNT, String.valueOf(amount));
   }
 
   private static String replaceEnvoyTierETime(String line, String tier, List<Integer> etime) {
-    String message = line.replaceAll("%tier%", EnvoyConfig.getEnvoyName(tier));
-    return message.replaceAll("%e_time%", getETime(etime));
+    String message = line.replace(PH_TIER, EnvoyConfig.getEnvoyName(tier));
+    return message.replace(PH_ETIME, getETime(etime));
   }
 
   private static String replaceTierTimeLoc(String line, String tier, int time, Location loc) {
-    String message = line.replaceAll("%tier%", FlareConfig.getFlareTier(tier));
-    message = message.replaceAll("%time%", String.valueOf(time));
-    return message.replaceAll("%loc%", getLocation(loc));
+    String message = line.replace(PH_TIER, FlareConfig.getFlareTier(tier));
+    message = message.replace(PH_TIME, String.valueOf(time));
+    return message.replace(PH_LOC, getLocation(loc));
   }
 
-  private static String replaceEnvoyTierRemainETime(String line, String tier, int remain,
-      List<Integer> etime) {
-    String message = line.replaceAll("%tier%", EnvoyConfig.getEnvoyName(tier));
-    message = message.replaceAll("%remain%", String.valueOf(remain));
-    return message.replaceAll("%e_time%", getETime(etime));
+  private static String replaceEnvoyTierRemainETime(String line, String tier, int remain, List<Integer> etime) {
+    String message = line.replace(PH_TIER, EnvoyConfig.getEnvoyName(tier));
+    message = message.replace(PH_REMAIN, String.valueOf(remain));
+    return message.replace(PH_ETIME, getETime(etime));
   }
 
-  private static String replacePlayerTierLoc(String line, Player player, String tier,
-      Location loc) {
-    String message = line.replaceAll("%player%", getPlayerName(player));
-    message = message.replaceAll("%tier%", FlareConfig.getFlareTier(tier));
-    return message.replaceAll("%loc%", String.valueOf(loc));
+  private static String replacePlayerTierLoc(String line, Player player, String tier, Location loc) {
+    String message = line.replace(PH_PLAYER, getPlayerName(player));
+    message = message.replace(PH_TIER, FlareConfig.getFlareTier(tier));
+    return message.replace(PH_LOC, String.valueOf(loc));
   }
 
-  private static String replacePlayerTierAmount(String line, Player player, String tier,
-      int amount) {
-    String message = line.replaceAll("%player%", getPlayerName(player));
-    message = message.replaceAll("%tier%", FlareConfig.getFlareTier(tier));
-    return message.replaceAll("%amount%", String.valueOf(amount));
+  private static String replacePlayerTierAmount(String line, Player player, String tier, int amount) {
+    String message = line.replace(PH_PLAYER, getPlayerName(player));
+    message = message.replace(PH_TIER, FlareConfig.getFlareTier(tier));
+    return message.replace(PH_AMOUNT, String.valueOf(amount));
   }
 
-  private static String replacePlayerEnvoyTierAmount(String line, Player player, String tier,
-      int amount) {
-    String message = line.replaceAll("%player%", getPlayerName(player));
-    message = message.replaceAll("%tier%", EnvoyConfig.getEnvoyName(tier));
-    return message.replaceAll("%amount%", String.valueOf(amount));
+  private static String replacePlayerEnvoyTierAmount(String line, Player player, String tier, int amount) {
+    String message = line.replace(PH_PLAYER, getPlayerName(player));
+    message = message.replace(PH_TIER, EnvoyConfig.getEnvoyName(tier));
+    return message.replace(PH_AMOUNT, String.valueOf(amount));
   }
 
-  private static String replacePlayerTierTimeLoc(String line, Player player, String tier, int time,
-      Location loc) {
-    String message = line.replaceAll("%player%", getPlayerName(player));
-    message = message.replaceAll("%tier%", FlareConfig.getFlareTier(tier));
-    message = message.replaceAll("%time%", String.valueOf(time));
-    message = message.replaceAll("%loc%", getLocation(loc));
+  private static String replacePlayerTierTimeLoc(String line, Player player, String tier, int time, Location loc) {
+    String message = line.replace(PH_PLAYER, getPlayerName(player));
+    message = message.replace(PH_TIER, FlareConfig.getFlareTier(tier));
+    message = message.replace(PH_TIME, String.valueOf(time));
+    message = message.replace(PH_LOC, getLocation(loc));
     return message;
   }
 
-  private static String replacePlayerTierRemainLoc(String line, Player player, String tier,
-      int remain, Location loc) {
-    String message = line.replaceAll("%player%", getPlayerName(player));
-    message = message.replaceAll("%tier%", FlareConfig.getFlareTier(tier));
-    message = message.replaceAll("%remain%", String.valueOf(remain));
-    return message.replaceAll("%loc%", getLocation(loc));
+  private static String replacePlayerTierRemainLoc(String line, Player player, String tier, int remain, Location loc) {
+    String message = line.replace(PH_PLAYER, getPlayerName(player));
+    message = message.replace(PH_TIER, FlareConfig.getFlareTier(tier));
+    message = message.replace(PH_REMAIN, String.valueOf(remain));
+    return message.replace(PH_LOC, getLocation(loc));
   }
 
-  private static String replaceEnvoyPlayerTierRemainETime(String line, Player player, String tier,
-      int remain, List<Integer> etime) {
-    String message = line.replaceAll("%tier%", EnvoyConfig.getEnvoyName(tier));
+  private static String replaceEnvoyPlayerTierRemainETime(
+      String line,
+      Player player,
+      String tier,
+      int remain,
+      List<Integer> etime
+  ) {
+    String message = line.replace(PH_TIER, EnvoyConfig.getEnvoyName(tier));
     if (player != null) {
-      message = line.replaceAll("%player%", getPlayerName(player));
+      message = line.replace(PH_PLAYER, getPlayerName(player));
     }
-    message = message.replaceAll("%remain%", String.valueOf(remain));
-    return message.replaceAll("%e_time%", getETime(etime));
+    message = message.replace(PH_REMAIN, String.valueOf(remain));
+    return message.replace(PH_ETIME, getETime(etime));
   }
 
   private static Collection<? extends Player> getPlayersInRange(Location location, int range) {
@@ -1083,10 +1094,7 @@ public class Messages {
     }
     Set<Player> result = new HashSet<>();
     for (Player player : Bukkit.getOnlinePlayers()) {
-      if (!player.getWorld().equals(location.getWorld())) {
-        continue;
-      }
-      if (player.getLocation().distance(location) > range) {
+      if (!player.getWorld().equals(location.getWorld()) || player.getLocation().distance(location) > range) {
         continue;
       }
       result.add(player);

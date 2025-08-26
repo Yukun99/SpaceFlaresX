@@ -1,16 +1,13 @@
 package me.yukun.spaceflares.config.validator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import me.yukun.spaceflares.config.ConfigTypeEnum;
 import me.yukun.spaceflares.config.FieldTypeEnum;
 import me.yukun.spaceflares.integration.region.RegionSupportManager;
 import me.yukun.spaceflares.util.Fireworks;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.*;
 
 public class FlareConfigValidator implements IValidator {
 
@@ -39,6 +36,7 @@ public class FlareConfigValidator implements IValidator {
     put("Region.WorldGuard.PvPFlag", FieldTypeEnum.BOOLEAN);
     put("Region.WorldGuard.NoBuild", FieldTypeEnum.BOOLEAN);
     put("Region.Warzone", FieldTypeEnum.BOOLEAN);
+    put("Region.Skyblock", FieldTypeEnum.BOOLEAN);
     put("Firework.Type", FieldTypeEnum.FIREWORK);
     put("Firework.Colors", FieldTypeEnum.COLOR);
   }};

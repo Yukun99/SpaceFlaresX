@@ -13,9 +13,11 @@ import org.jetbrains.annotations.NotNull;
 public class FlareCommandManager extends CommandManager implements CommandExecutor {
 
   @Override
-  public boolean onCommand(@NotNull CommandSender sender,
+  public boolean onCommand(
+      @NotNull CommandSender sender,
       @NotNull org.bukkit.command.Command command,
-      @NotNull String label, @NotNull String[] args) {
+      @NotNull String label, @NotNull String[] args
+  ) {
     AbstractCommand flareCmd = new HelpCommand(sender, true);
     boolean hasPermission = false;
     switch (args.length) {

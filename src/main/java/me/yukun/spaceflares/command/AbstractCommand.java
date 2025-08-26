@@ -32,4 +32,8 @@ public abstract class AbstractCommand {
     int amount = Integer.parseInt(argument);
     return amount > 0 && amount <= 64;
   }
+
+  protected static AbstractCommand getDefaultHelpCommand(CommandSender sender) {
+    return new HelpCommand(sender, false);
+  }
 }

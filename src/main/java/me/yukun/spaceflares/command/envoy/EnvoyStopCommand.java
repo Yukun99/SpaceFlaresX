@@ -1,7 +1,6 @@
 package me.yukun.spaceflares.command.envoy;
 
 import me.yukun.spaceflares.command.AbstractCommand;
-import me.yukun.spaceflares.command.HelpCommand;
 import me.yukun.spaceflares.config.EnvoyConfig;
 import me.yukun.spaceflares.config.Messages;
 import me.yukun.spaceflares.envoy.Envoy;
@@ -18,7 +17,7 @@ public class EnvoyStopCommand extends AbstractCommand {
 
   public static AbstractCommand parseCommand(CommandSender sender, String envoy) {
     if (!EnvoyConfig.isEnvoy(envoy)) {
-      return new HelpCommand(sender, false);
+      return getDefaultHelpCommand(sender);
     }
     return new EnvoyStopCommand(sender, envoy);
   }

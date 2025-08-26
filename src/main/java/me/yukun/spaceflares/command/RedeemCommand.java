@@ -17,7 +17,7 @@ public class RedeemCommand extends AbstractCommand {
 
   public static AbstractCommand parseRedeemCommand(CommandSender sender, boolean isFlareCommand) {
     if (!(sender instanceof Player)) {
-      return new HelpCommand(sender, isFlareCommand);
+      return getDefaultHelpCommand(sender);
     }
     return new RedeemCommand(sender, isFlareCommand);
   }

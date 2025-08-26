@@ -1,13 +1,5 @@
 package me.yukun.spaceflares.config;
 
-import static me.yukun.spaceflares.util.TextFormatter.applyColor;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import me.yukun.spaceflares.SpaceFlares;
 import me.yukun.spaceflares.config.validator.FlareConfigValidator;
 import me.yukun.spaceflares.config.validator.ValidationException;
@@ -24,6 +16,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.io.File;
+import java.util.*;
+
+import static me.yukun.spaceflares.util.TextFormatter.applyColor;
 
 public class FlareConfig {
 
@@ -44,14 +41,19 @@ public class FlareConfig {
     nameConfigMap.put(this.name, this);
   }
 
+  /**
+   * Creates flare items and chaches them for future access.
+   */
   protected static void setup() {
     for (FlareConfig flareConfig : nameConfigMap.values()) {
       flareConfig.setupFlareItem();
     }
   }
 
+  /**
+   * Creates flare item and caches it for future access.
+   */
   private void setupFlareItem() {
-    // At this point nothing should be null, but IntelliJ still thinks they can be /shrugs
     // Create item
     String materialName = config.getString("Item");
     assert materialName != null;
@@ -65,18 +67,18 @@ public class FlareConfig {
 
     String itemName = config.getString("Name");
     assert itemName != null;
-    itemName = itemName.replaceAll("%tier%", getTierName());
+    itemName = itemName.replace("%tier%", getTierName());
 
     List<String> itemLore = new ArrayList<>();
     for (String line : config.getStringList("Lore")) {
-      itemLore.add(applyColor(line.replaceAll("%tier%", name)));
+      itemLore.add(applyColor(line.replace("%tier%", name)));
     }
 
     // Set item PDC
     PersistentDataContainer container = itemMeta.getPersistentDataContainer();
     container.set(flareKey, PersistentDataType.STRING, name);
 
-    // Apply item metadate
+    // Apply item metadata
     itemMeta.setDisplayName(applyColor(itemName));
     itemMeta.setLore(itemLore);
     item.setItemMeta(itemMeta);
@@ -85,6 +87,9 @@ public class FlareConfig {
     this.flareItem = item;
   }
 
+  /**
+   * Validates all flare configs.
+   */
   public static void validate() {
     FlareConfigValidator validator = new FlareConfigValidator();
     for (FlareConfig flareConfig : nameConfigMap.values()) {
@@ -97,37 +102,73 @@ public class FlareConfig {
     }
   }
 
+  /**
+   * Clears all cached flare configs.
+   */
   public static void reloadClear() {
     nameConfigMap.clear();
   }
 
+  /**
+   * Reloads all flare configs.
+   */
   public static void reload() {
     for (FlareConfig flareConfig : nameConfigMap.values()) {
       flareConfig.config = YamlConfiguration.loadConfiguration(flareConfig.file);
     }
   }
 
+  /**
+   * Checks if specified flare exists.
+   * @param name Name of flare to check.
+   * @return True if flare exists, false otherwise.
+   */
   public static boolean isFlare(String name) {
     return nameConfigMap.containsKey(name);
   }
 
+  /**
+   * Gets tier name of specified flare.
+   * @param flare Flare to get tier name for.
+   * @return Tier name of specified flare.
+   */
   public static String getFlareTier(String flare) {
     return nameConfigMap.get(flare).getTierName();
   }
 
+  /**
+   * Gets whether specified flare should announce when it spawns.
+   * @param flare Flare to check.
+   * @return True if flare should announce, false otherwise.
+   */
   @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   public static boolean getFlareDoAnnounce(String flare) {
     return nameConfigMap.get(flare).getDoAnnounce();
   }
 
+  /**
+   * Gets the range in which specified flare should announce.
+   * @param flare Flare to get announce range for.
+   * @return Announce range of specified flare.
+   */
   public static int getFlareAnnounceRange(String flare) {
     return nameConfigMap.get(flare).getAnnounceRange();
   }
 
+  /**
+   * Gets flare item for specified flare type.
+   * @param flare Flare to get item for.
+   * @return Flare item of specified flare.
+   */
   public static ItemStack getFlareItem(String flare) {
     return nameConfigMap.get(flare).getFlareItem().clone();
   }
 
+  /**
+   * Gets flare type from specified flare item.
+   * @param item Flare item to get type for.
+   * @return Flare type of specified item.
+   */
   public static String getFlareFromItem(ItemStack item) {
     if (!item.hasItemMeta()) {
       return null;
@@ -143,8 +184,7 @@ public class FlareConfig {
 
   /**
    * Gets spawn location of specified flare type for specified player.
-   *
-   * @param flare  Flare type to get spawn location for.
+   * @param flare Flare type to get spawn location for.
    * @param player Player who summoned flare of specified type.
    * @return Location where flare should be spawned.
    */
@@ -152,17 +192,26 @@ public class FlareConfig {
     return nameConfigMap.get(flare).getSpawnLocation(player);
   }
 
+  /**
+   * Gets random radius for specified flare type.
+   * @param flare Flare type to get random radius for.
+   * @return Random radius of specified flare.
+   */
   public static int getFlareRandomRadius(String flare) {
     return nameConfigMap.get(flare).getRandomRadius();
   }
 
+  /**
+   * Gets fall height for specified flare type.
+   * @param flare Flare type to get fall height for.
+   * @return Fall height of specified flare.
+   */
   public static int getFlareFallHeight(String flare) {
     return nameConfigMap.get(flare).getFallHeight();
   }
 
   /**
    * Gets list of firework colours of specified flare type.
-   *
    * @param flare Flare type to get list of firework colours for.
    * @return List of firework colours of specified flare type.
    */
@@ -172,7 +221,6 @@ public class FlareConfig {
 
   /**
    * Gets firework type of specified flare type.
-   *
    * @param flare Flare type to get firework type for.
    * @return Firework type of specified flare type.
    */
@@ -180,20 +228,49 @@ public class FlareConfig {
     return nameConfigMap.get(flare).getFireworkType();
   }
 
+  /**
+   * Gets list of WorldGuard regions for specified flare type.
+   * @param flare Flare type to get list of WorldGuard regions for.
+   * @return List of WorldGuard regions for specified flare type.
+   */
   public static List<String> getFlareRegionWGList(String flare) {
     return nameConfigMap.get(flare).getRegionWGList();
   }
 
+  /**
+   * Gets whether specified flare type should use WorldGuard PvP flag.
+   * @param flare Flare type to check.
+   * @return True if flare should use WorldGuard PvP flag, false otherwise.
+   */
   public static boolean getFlareRegionWGDoPvPFlag(String flare) {
     return nameConfigMap.get(flare).getRegionWGDoPvPFlag();
   }
 
+  /**
+   * Gets whether specified flare type should use WorldGuard NoBuild flag.
+   * @param flare Flare type to check.
+   * @return True if flare should use WorldGuard NoBuild flag, false otherwise.
+   */
   public static boolean getFlareRegionWGDoNoBuild(String flare) {
     return nameConfigMap.get(flare).getRegionWGDoNoBuild();
   }
 
+  /**
+   * Gets whether specified flare type should use Warzone.
+   * @param flare Flare type to check.
+   * @return True if flare should use Warzone, false otherwise.
+   */
   public static boolean getFlareRegionUseWarzone(String flare) {
     return nameConfigMap.get(flare).getRegionUseWarzone();
+  }
+
+  /**
+   * Gets whether specified flare type should use Skyblock.
+   * @param flare Flare type to check.
+   * @return True if flare should use Skyblock, false otherwise.
+   */
+  public static boolean getFlareRegionUseSkyblock(String flare) {
+    return nameConfigMap.get(flare).getRegionUseSkyblock();
   }
 
   private String getTierName() {
@@ -255,12 +332,12 @@ public class FlareConfig {
     if (!colors.isEmpty()) {
       return colors;
     }
-    List<Color> colors = new ArrayList<>();
-    for (String name : config.getStringList("Firework.Colors")) {
-      colors.add(Fireworks.getColor(name));
+    List<Color> configColors = new ArrayList<>();
+    for (String configColorName : config.getStringList("Firework.Colors")) {
+      configColors.add(Fireworks.getColor(configColorName));
     }
-    this.colors.addAll(colors);
-    return colors;
+    this.colors.addAll(configColors);
+    return configColors;
   }
 
   private Type getFireworkType() {
@@ -288,5 +365,9 @@ public class FlareConfig {
 
   private boolean getRegionUseWarzone() {
     return config.getBoolean("Region.Warzone");
+  }
+
+  private boolean getRegionUseSkyblock() {
+    return config.getBoolean("Region.SuperiorSkyblock.Enable");
   }
 }

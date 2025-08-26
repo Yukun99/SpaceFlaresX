@@ -1,6 +1,5 @@
 package me.yukun.spaceflares;
 
-import java.util.Objects;
 import me.yukun.spaceflares.command.envoy.EnvoyCommandManager;
 import me.yukun.spaceflares.command.flare.FlareCommandManager;
 import me.yukun.spaceflares.config.FileManager;
@@ -10,11 +9,7 @@ import me.yukun.spaceflares.envoy.EnvoyFlareUseListener;
 import me.yukun.spaceflares.envoy.edit.EnvoyEditListener;
 import me.yukun.spaceflares.envoy.edit.EnvoyEditor;
 import me.yukun.spaceflares.flare.Flare;
-import me.yukun.spaceflares.flare.events.CrateClickListener;
-import me.yukun.spaceflares.flare.events.FlareFireworkListener;
-import me.yukun.spaceflares.flare.events.FlareLandListener;
-import me.yukun.spaceflares.flare.events.FlareUseListener;
-import me.yukun.spaceflares.flare.events.RewardGUIListener;
+import me.yukun.spaceflares.flare.events.*;
 import me.yukun.spaceflares.integration.hologram.HologramSupportManager;
 import me.yukun.spaceflares.integration.region.RegionSupportManager;
 import me.yukun.spaceflares.redeem.RedeemGUI;
@@ -28,6 +23,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Objects;
 
 public class SpaceFlares extends JavaPlugin implements Listener {
 
@@ -82,6 +79,9 @@ public class SpaceFlares extends JavaPlugin implements Listener {
     }
     if (RegionSupportManager.hasSaberFactions()) {
       Messages.sendIntegrationEnabled(player, "Factions");
+    }
+    if (RegionSupportManager.hasSuperiorSkyblock()) {
+      Messages.sendIntegrationEnabled(player, "SuperiorSkyblock");
     }
     if (HologramSupportManager.hasCMIHolograms()) {
       Messages.sendIntegrationEnabled(player, "CMI");

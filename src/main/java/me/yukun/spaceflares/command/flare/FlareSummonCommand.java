@@ -1,7 +1,6 @@
 package me.yukun.spaceflares.command.flare;
 
 import me.yukun.spaceflares.command.AbstractCommand;
-import me.yukun.spaceflares.command.HelpCommand;
 import me.yukun.spaceflares.config.FlareConfig;
 import me.yukun.spaceflares.flare.Flare;
 import org.bukkit.Location;
@@ -15,8 +14,7 @@ public class FlareSummonCommand extends AbstractCommand {
   private final Player player;
   private final Location location;
 
-  private FlareSummonCommand(CommandSender sender, String flare, Player player, int x, int y,
-      int z) {
+  private FlareSummonCommand(CommandSender sender, String flare, Player player, int x, int y, int z) {
     super(sender);
     this.flare = flare;
     this.player = player;
@@ -32,13 +30,13 @@ public class FlareSummonCommand extends AbstractCommand {
 
   public static AbstractCommand parseSummonCommand(CommandSender sender, String[] args) {
     if (!(sender instanceof Player player)) {
-      return new HelpCommand(sender, true);
+      return getDefaultHelpCommand(sender);
     }
     if (!FlareConfig.isFlare(args[1])) {
-      return new HelpCommand(sender, true);
+      return getDefaultHelpCommand(sender);
     }
     if (!isValidCoord(args[2]) || !isValidCoord(args[3]) || !isValidCoord(args[4])) {
-      return new HelpCommand(sender, true);
+      return getDefaultHelpCommand(sender);
     }
     String flare = args[1];
     int x = getCoord(args[2], player, CoordType.X);

@@ -41,40 +41,49 @@ public class FlareGiveCommand extends AbstractCommand {
   }
 
   public static AbstractCommand parseGiveCommand(CommandSender sender, String[] args) {
-    switch (args.length) {
-      case 2:
-        if (!FlareConfig.isFlare(args[1]) || !(sender instanceof Player)) {
-          break;
-        }
-        return new FlareGiveCommand(sender, (Player) sender, args[1]);
-      case 3:
-        if (!FlareConfig.isFlare(args[1]) && Bukkit.getPlayer(args[1]) == null) {
-          break;
-        }
-        if (FlareConfig.isFlare(args[1])) {
-          if (!isValidAmount(args[2])) {
-            break;
-          }
-          int amount = Integer.parseInt(args[2]);
-          return new FlareGiveCommand(sender, (Player) sender, args[1], amount);
-        }
-        if (Bukkit.getPlayer(args[1]) != null) {
-          if (!FlareConfig.isFlare(args[2])) {
-            break;
-          }
-          Player player = Bukkit.getPlayer(args[1]);
-          return new FlareGiveCommand(sender, player, args[2]);
-        }
-        break;
-      case 4:
-        if (Bukkit.getPlayer(args[1]) == null || !FlareConfig.isFlare(args[2]) || !isValidAmount(
-            args[3])) {
-          break;
-        }
-        Player player = Bukkit.getPlayer(args[1]);
-        int amount = Integer.parseInt(args[3]);
-        return new FlareGiveCommand(sender, player, args[2], amount);
+    return switch (args.length) {
+      case 2 -> parse2ArgCommand(sender, args);
+      case 3 -> parse3ArgCommand(sender, args);
+      case 4 -> parse4ArgCommand(sender, args);
+      default -> new HelpCommand(sender, true);
+    };
+  }
+
+  private static AbstractCommand parse2ArgCommand(CommandSender sender, String[] args) {
+    if (!FlareConfig.isFlare(args[1]) || !(sender instanceof Player)) {
+      return getDefaultHelpCommand(sender);
     }
-    return new HelpCommand(sender, true);
+    return new FlareGiveCommand(sender, (Player) sender, args[1]);
+  }
+
+  private static AbstractCommand parse3ArgCommand(CommandSender sender, String[] args) {
+    if (!FlareConfig.isFlare(args[1]) && Bukkit.getPlayer(args[1]) == null) {
+      return getDefaultHelpCommand(sender);
+    }
+    if (FlareConfig.isFlare(args[1])) {
+      if (!isValidAmount(args[2])) {
+        return getDefaultHelpCommand(sender);
+      }
+      int amount = Integer.parseInt(args[2]);
+      return new FlareGiveCommand(sender, (Player) sender, args[1], amount);
+    }
+    if (Bukkit.getPlayer(args[1]) != null) {
+      if (!FlareConfig.isFlare(args[2])) {
+        return getDefaultHelpCommand(sender);
+      }
+      Player player = Bukkit.getPlayer(args[1]);
+      return new FlareGiveCommand(sender, player, args[2]);
+    }
+    return getDefaultHelpCommand(sender);
+  }
+
+  private static AbstractCommand parse4ArgCommand(CommandSender sender, String[] args) {
+    if (Bukkit.getPlayer(args[1]) == null || !FlareConfig.isFlare(args[2]) || !isValidAmount(
+        args[3])) {
+      return getDefaultHelpCommand(sender);
+    }
+    Player player = Bukkit.getPlayer(args[1]);
+    int amount = Integer.parseInt(args[3]);
+    return new FlareGiveCommand(sender, player, args[2], amount);
   }
 }
