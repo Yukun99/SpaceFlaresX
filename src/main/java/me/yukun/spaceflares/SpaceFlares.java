@@ -27,7 +27,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Objects;
 
 public class SpaceFlares extends JavaPlugin implements Listener {
-
   private boolean isConfigErrored = false;
 
   @Override
@@ -68,7 +67,7 @@ public class SpaceFlares extends JavaPlugin implements Listener {
   }
 
   @EventHandler
-  private void DevJoinEvent(PlayerJoinEvent event) {
+  private void devJoinEvent(PlayerJoinEvent event) {
     Player player = event.getPlayer();
     if (!player.getName().equals("xu_yukun")) {
       return;
@@ -97,7 +96,7 @@ public class SpaceFlares extends JavaPlugin implements Listener {
   }
 
   @EventHandler
-  private void AdminJoinEvent(PlayerJoinEvent event) {
+  private void adminJoinEvent(PlayerJoinEvent event) {
     Player player = event.getPlayer();
     if (!player.isOp() && !player.hasPermission("captchas.admin")) {
       return;
